@@ -61,6 +61,8 @@
   }
 
   &__logo {
+    display: inline-block;
+    background: url("../images/logo_with_text.svg");
     width: auto;
     height: 24px;
     margin-right: 4px;

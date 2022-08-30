@@ -23,7 +23,7 @@ module.exports = [
           use: [
             {
               loader: 'file-loader',
-              options: { outputPath: './', name: '[name].min.css'}
+              options: {outputPath: './', name: '[name].min.css'}
             },
             'sass-loader'
           ],
