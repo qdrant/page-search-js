@@ -1,0 +1,39 @@
+{
+  "name": "page-search",
+  "version": "1.0.0",
+  "description": "Add markup for the search modal popup:",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qdrant/page-search-js.git"
+  },
+  "keywords": [
+    "qdrant",
+    "search",
+    "page",
+    "search",
+    "documentation",
+    "vector",
+    "search"
+  ],
+  "author": "qdrant",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/qdrant/page-search-js/issues"
+  },
+  "homepage": "https://github.com/qdrant/page-search-js#readme",
+  "dependencies": {
+    "bootstrap": "^5.2.0"
+  },
+  "devDependencies": {
+    "file-loader": "^6.2.0",
+    "sass": "^1.54.6",
+    "sass-loader": "^13.0.2",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  }
+}
