@@ -1,34 +1,156 @@
 (function () {
-  document.getElementById('qdr-modal-wrapper').innerHTML = `<div class="modal fade qdr-search" id="searchModal" data-bs-keyboard="true" tabindex="-1"
+  // Modal markup string
+//   const innerModalHtml = `<div class="modal fade qdr-search" id="searchModal" data-bs-keyboard="true" tabindex="-1"
+//      aria-labelledby="searchModalLabel" aria-hidden="true">
+//     <div class="modal-dialog modal-dialog-scrollable modal-lg qdr-search__dialog">
+//         <div class="modal-content">
+//
+//             <div class="modal-header qdr-search__header">
+//                 <div class="modal-title input-group">
+//                     <div class="input-group-append">
+//                         <span class="input-group-text qdr-search__icon" id="basic-addon2">
+//                             <i class="fa fa-search"></i>
+//                         </span>
+//                     </div>
+//                     <input type="text" class="form-control qdr-search__input" placeholder="Search..."
+//                            id="searchInput" aria-label="Search">
+//                 </div>
+//
+//                 <button type="button" class="close qdr-search__close" data-bs-dismiss="modal" aria-label="Close">
+//                     <span aria-hidden="true">&times;</span>
+//                 </button>
+//             </div>
+//
+//             <div class="modal-body qdr-search__results"></div>
+//
+//             <div class="modal-footer qdr-search__footer">
+//                 Powered by
+//                 <span class="qdr-search__logo"></span>
+//             </div>
+//         </div>
+//     </div>
+// </div>`;
+
+  const innerModalHtml = `<div class="qdr-search" id="searchModal" tabindex="-1"
      aria-labelledby="searchModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg qdr-search__dialog">
-        <div class="modal-content">
+     <div class="qdr-search__dialog">
+         <div class="qdr-search__content">
+             <div class="qdr-search__header">
+                 <div class="qdr-search__title">
+                     <div class="qdr-search__icon">
+                         <span class="search-icon"></span>
+                     </div>
+                     <input type="text" class="qdr-search__input" placeholder="Search..."
+                            id="searchInput" aria-label="Search">
+                 </div>
 
-            <div class="modal-header qdr-search__header">
-                <div class="modal-title input-group">
-                    <div class="input-group-append">
-                        <span class="input-group-text qdr-search__icon" id="basic-addon2">
-                            <i class="fa fa-search"></i>
-                        </span>
-                    </div>
-                    <input type="text" class="form-control qdr-search__input" placeholder="Search..."
-                           id="searchInput" aria-label="Search">
-                </div>
+                 <button type="button" class="qdr-search__close" aria-label="Close">
+                     <span aria-hidden="true">&times;</span>
+                 </button>
+             </div>
 
-                <button type="button" class="close qdr-search__close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+             <div class="qdr-search__results"></div>
 
-            <div class="modal-body qdr-search__results"></div>
+             <div class="qdr-search__footer">
+                 Powered by
+                 <span class="qdr-search__logo"></span>
+             </div>
+         </div>
+     </div>
+ </div>`;
 
-            <div class="modal-footer qdr-search__footer">
-                Powered by
-                <span class="qdr-search__logo"></span>
-            </div>
-        </div>
-    </div>
-</div>`;
+  /**
+   * Maces DOM node from html string
+   * @param {string} htmlString
+   * @return {ChildNode}
+   */
+  function createElementFromHTML(htmlString) {
+    const div = document.createElement('div');
+    div.innerHTML = htmlString.trim();
+
+    // Change this to div.childNodes to support multiple top-level nodes.
+    return div.firstElementChild;
+  }
+
+  // add modal markup to the page
+  document.body.appendChild(createElementFromHTML(innerModalHtml));
+
+  /**
+   * @class Modal Window
+   * @param {Object} {modalOuterSelector, modalDialogSelector, closeBtnSelector, bodySelector}
+   */
+  class Modal {
+    #showEvent
+    #hideEvent
+
+    constructor({modalOuterSelector, modalDialogSelector, closeBtnSelector, resultSelector}) {
+      // an outer element
+      this.modal = document.querySelector(modalOuterSelector);
+      // an outer element - a dialog window
+      this.dialog = document.querySelector(modalDialogSelector);
+      this.openBtn = document.querySelector('[data-target="#searchModal"]');
+      this.closeBtn = this.modal.querySelector(closeBtnSelector);
+      this.result = this.modal.querySelector(resultSelector);
+      console.log('result', this.result);
+
+      // events
+      this.#showEvent = new Event('qdrModalShow');
+      this.#hideEvent = new Event('qdrModalHide');
+
+      this.boundEventHandler1 = this.show.bind(this)
+      this.boundEventHandler2 = this.hide.bind(this)
+
+      // listens for clicks on the open button
+      this.openBtn.addEventListener('click', this.boundEventHandler1);
+
+      // listens for clicks on the modal
+      this.modal.addEventListener('click', (e) => {
+        const isClickInsideDialog = this.dialog.contains(e.target) || e.target === this.dialog;
+        const isClickInsideCloseBtn = this.closeBtn.contains(e.target) || e.target === this.closeBtn;
+
+        // if clicked on the close button or outside of the dialog block
+        if (!isClickInsideDialog || isClickInsideCloseBtn) {
+          this.boundEventHandler2(e);
+        }
+      });
+
+      // listens for the Esc button is pressed
+      document.addEventListener('keydown', (e) => {
+        console.log('esc')
+        if (e.key === "Escape") {
+          console.log('esc2')
+          // write your logic here.
+          this.boundEventHandler2(e);
+        }
+      })
+
+    }
+
+    show() {
+      this.modal.style.display = 'block';
+      this.modal.classList.add('active');
+      document.dispatchEvent(this.#showEvent);
+    }
+
+    hide() {
+      const modal = this.modal;
+      const myEvent = this.#hideEvent;
+      modal.classList.remove('active');
+      const t = setTimeout(function () {
+        modal.style.display = 'none';
+        document.dispatchEvent(myEvent);
+        clearTimeout(t);
+      }, 300)
+    }
+
+    /**
+     * @param {Array} newResultChildren - array of DOM Nodes
+     */
+    updateResultChildren(newResultChildren) {
+      this.result.replaceChildren(...newResultChildren);
+    }
+
+  }
 
   /**
    * @class Search
@@ -39,8 +161,8 @@
     #updEvent;
     #dataVersion;
 
-    constructor(selector, apiUrl) {
-      this.ref = document.querySelector(selector);
+    constructor({apiUrl}) {
+      this.ref = document.querySelector('#searchInput');
       this.apiUrl = apiUrl;
       this.data = [];
       this.#updEvent = new Event('searchDataIsReady');
@@ -49,6 +171,14 @@
       // listens when user types in the search input
       this.boundEventHandler = this.fetchData.bind(this)
       this.ref.addEventListener('keyup', this.boundEventHandler)
+    }
+
+    get ref() {
+      return this._ref;
+    }
+
+    set ref(newRef) {
+      this._ref = newRef;
     }
 
     get data() {
@@ -100,50 +230,71 @@
     }
   }
 
-  /**
-   * adds an encoded in base64 selector to the url
-   * @param data
-   * @return {string}
-   */
-  const generateUrlWithSelector = (data) => {
-    // todo: remove replace
-    const url = new URL(data?.payload?.url.replace('https://qdrant.tech', 'http://localhost:1313'));
-    url.searchParams.append('selector', btoa(data?.payload?.location));
+  class SearchModal {
+    constructor({searchApiUrl}) {
+      this.apiUrl = searchApiUrl;
+      this.modal = new Modal({
+        modalOuterSelector: '#searchModal',
+        modalDialogSelector: '.qdr-search__dialog',
+        closeBtnSelector: '.qdr-search__close',
+        resultSelector: '.qdr-search__results'
+      });
+      this.searchInput = new Search({apiUrl: this.apiUrl})
 
-    return url.toString();
-  }
+      // when a search modal is shown
+      this.boundEventHandler1 = this.setFocus.bind(this)
+      document.addEventListener('qdrModalShow', this.boundEventHandler1);
 
-  /**
-   * generates DOM element (<a>) with inner HTML for one result
-   * @param data - an object for one result
-   * @return {HTMLAnchorElement}
-   */
-  const generateSearchResult = (data) => {
-    const resultElem = document.createElement('a');
-    resultElem.classList.add('media', 'qdr-search-result');
-    resultElem.href = generateUrlWithSelector(data);
-    resultElem.innerHTML = `<span class="align-self-center qdr-search-result__icon"><i class="fas fa-file-alt"></i></span>
+      // when new search data if ready to be shown
+      this.boundEventHandler2 = this.updateResult.bind(this)
+      document.addEventListener('searchDataIsReady', this.boundEventHandler2);
+    }
+
+    /**
+     * adds an encoded in base64 selector to the url
+     * @param data
+     * @return {string}
+     */
+    generateUrlWithSelector (data) {
+      // todo: remove replace
+      const url = new URL(data?.payload?.url.replace('https://qdrant.tech', 'http://localhost:1313'));
+      url.searchParams.append('selector', btoa(data?.payload?.location));
+
+      return url.toString();
+    }
+
+    /**
+     * generates DOM element (<a>) with inner HTML for one result
+     * @param data - an object for one result
+     * @return {HTMLAnchorElement}
+     */
+    generateSearchResult (data) {
+      const resultElem = document.createElement('a');
+      resultElem.classList.add('media', 'qdr-search-result');
+      resultElem.href = this.generateUrlWithSelector(data);
+      resultElem.innerHTML = `<span class="align-self-center qdr-search-result__icon"><i class="fas fa-file-alt"></i></span>
                    <div class="media-body"><h5 class="mt-0">${data.payload.titles.join(' > ')}</h5>
                    <p>${data.payload.text}</p></div>`;
-    return resultElem;
+      return resultElem;
+    }
+
+    updateResult() {
+      const newResultChildren = [];
+      this.searchInput.data.forEach(res => {
+        newResultChildren.push(this.generateSearchResult(res));
+      });
+      this.modal.updateResultChildren(newResultChildren);
+    }
+
+    setFocus() {
+      this.searchInput.ref.focus();
+    }
   }
 
-  // when a search modal is shown
-  document.getElementById('searchModal').addEventListener('shown.bs.modal', function (event) {
-    console.log('b')
-    document.getElementById("searchInput").focus();
-    // todo: replace with a real url
-    // todo: put URL to the modal wrapper data-attr?
-    const search = new Search('#searchInput', 'temp/data.json');
+  setTimeout(() => {
 
-    document.addEventListener('searchDataIsReady', () => {
-      const resultsContainerSelector = '.qdr-search__results';
-      const resultsContainer = document.querySelector(resultsContainerSelector);
-      const newResultChildren = [];
-      search.data.forEach(res => {
-        newResultChildren.push(generateSearchResult(res));
-      });
-      resultsContainer.replaceChildren(...newResultChildren);
-    });
-  });
+  new SearchModal({searchApiUrl: 'temp/data.json'});
+  }, 3000)
 })();
+
+

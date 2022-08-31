@@ -26,9 +26,6 @@
     "url": "https://github.com/qdrant/page-search-js/issues"
   },
   "homepage": "https://github.com/qdrant/page-search-js#readme",
-  "dependencies": {
-    "bootstrap": "^5.2.0"
-  },
   "devDependencies": {
     "file-loader": "^6.2.0",
     "sass": "^1.54.6",
