@@ -14,5 +14,13 @@
 </button>
 
 </body>
-<script src="js/search.js"></script>
+<script src="../dist/js/search.min.js" type="module"></script>
+<script>
+  (function () {
+  // todo: remove timeout
+  setTimeout(() => {
+    window.createSearchModal('temp/data.json');
+  }, 3000);
+  })();
+</script>
 </html>

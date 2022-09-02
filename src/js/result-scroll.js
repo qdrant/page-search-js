@@ -1,8 +1,8 @@
 $(document).ready(() => {
   const selector = new URLSearchParams(window.location.search).get('selector');
   if (selector) {
-    console.log(atob(selector))
-    const element = document.querySelector(atob(selector));
+    console.log(window.atob(selector))
+    const element = document.querySelector(window.atob(selector));
     const topOffset = 45;
     const elementPosition = element.getBoundingClientRect().top;
     const offsetPosition = elementPosition + window.pageYOffset - topOffset;
