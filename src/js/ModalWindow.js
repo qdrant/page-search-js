@@ -38,10 +38,7 @@ export class ModalWindow {
 
     // listens for the Esc button is pressed
     document.addEventListener('keydown', (e) => {
-      console.log('esc')
       if (e.key === "Escape") {
-        console.log('esc2')
-        // write your logic here.
         this.boundEventHandler2(e);
       }
     })

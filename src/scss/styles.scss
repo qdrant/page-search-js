@@ -1,1 +1,112 @@
-@import "search";
+.qdr-search-input-btn {
+  display: block;
+  width: 90%;
+  margin-right: 8px;
+  margin-bottom: 6px;
+  margin-left: 8px;
+  padding: 8px 10px;
+  text-align: left;
+  color: #6d7376;
+  border: 1px solid #888c8e;
+  border-radius: 4px;
+  background: none;
+
+  &:hover {
+    color: var(--brand-secondary);
+    box-shadow: 0 0 1px 0 var(--brand-secondary);
+  }
+}
+
+.qdr-search {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.4s ease-in;
+
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+
+  &.active {
+    opacity: 1;
+    transition: opacity 0.4s ease-out;
+  }
+
+  &__dialog {
+    margin-top: 110px;
+
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+  }
+
+  &__header {
+    padding-right: 0;
+    padding-left: 0;
+    position: relative;
+  }
+
+  &__close {
+    position: absolute;
+    z-index: 3;
+    top: 20px;
+    right: 18px;
+  }
+
+  &__input {
+    padding-left: 0;
+    border: 0;
+
+    &:focus {
+      border: 0;
+      box-shadow: none;
+    }
+  }
+
+  &__icon {
+    padding-left: 18px;
+    border: 0;
+    background: none;
+  }
+
+  &__results {
+    min-height: 180px;
+    padding: 8px 16px;
+  }
+
+  &__footer {
+    line-height: 1;
+  }
+
+  &__logo {
+    display: inline-block;
+    width: auto;
+    height: 24px;
+    margin-right: 4px;
+    margin-left: 4px;
+  }
+}
+
+.qdr-search-result {
+  margin: 8px 0;
+  padding: 16px;
+  color: #6d7376;
+  border: 1px solid lightgrey;
+  border-radius: 8px;
+
+  &:hover {
+    color: white;
+    background: var(--brand-secondary);
+  }
+
+  &__icon {
+    margin-right: 16px;
+    font-size: 18px;
+  }
+}

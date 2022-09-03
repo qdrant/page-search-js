@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="../dist/css/styles.min.css">
+    <link rel="stylesheet" href="css/styles.min.css">
 </head>
 <body>
 
@@ -13,14 +13,14 @@
     <i class="fa fa-search mr-3"></i> Search...
 </button>
 
+<h1>Example Page</h1>
+
 </body>
-<script src="../dist/js/search.min.js" type="module"></script>
-<script>
-  (function () {
-  // todo: remove timeout
-  setTimeout(() => {
-    window.createSearchModal('temp/data.json');
-  }, 3000);
-  })();
+<script defer src="js/search.min.js" type="module"></script>
+<script defer>
+  window.addEventListener('DOMContentLoaded', () => {
+    createSearchModal('temp/data.json');
+    console.log("DOM is ready");
+  });
 </script>
 </html>

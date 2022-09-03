@@ -16,7 +16,13 @@ export class Search {
 
     // listens when user types in the search input
     this.boundEventHandler = this.fetchData.bind(this)
-    this.ref.addEventListener('keyup', this.boundEventHandler)
+    // todo: only on chars
+    this.ref.addEventListener('keyup', (e) => {
+      if (/['^+%&/()=?_\-~`;#$½{[\]}\\|<>@,]/gi.test(e.key)) {
+        console.log('key')
+        this.boundEventHandler();
+      }
+    })
   }
 
   get ref() {
@@ -60,6 +66,11 @@ export class Search {
    * ]}
    */
   fetchData() {
+    console.log('fetch')
+    if (this.ref.value.trim().length === 0) {
+      return;
+    }
+
     const url = this.apiUrl + '/?q=' + this.ref.value;
     let reqVersion = this.#dataVersion + 1;
 
