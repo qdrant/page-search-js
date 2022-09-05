@@ -3,7 +3,7 @@
   "name": "page-search",
   "version": "1.0.0",
   "description": "Add markup for the search modal popup:",
-  "main": "index.js",
+  "main": "src/js/index.js",
   "scripts": {
     "build": "webpack --mode=production",
     "dev": "webpack serve --mode=development --open --progress",
