@@ -3,13 +3,13 @@ import {ModalWindow} from "./ModalWindow";
 import {Search} from "./Search";
 
 export class SearchModal {
-  constructor({searchApiUrl}) {
+  constructor({searchApiUrl, themeColor}) {
     this.apiUrl = searchApiUrl;
     this.modal = new ModalWindow({
       modalOuterSelector: '#searchModal',
       modalDialogSelector: '.qdr-search__dialog',
       closeBtnSelector: '.qdr-search__close',
-      resultSelector: '.qdr-search__results'
+      resultSelector: '.qdr-search__results',
     });
     this.searchInput = new Search({apiUrl: this.apiUrl})
 
@@ -31,8 +31,8 @@ export class SearchModal {
     const resultElem = document.createElement('a');
     resultElem.classList.add('media', 'qdr-search-result');
     resultElem.href = generateUrlWithSelector(data);
-    resultElem.innerHTML = `<span class="align-self-center qdr-search-result__icon"><i class="fas fa-file-alt"></i></span>
-                   <div class="media-body"><h5 class="mt-0">${data.payload.titles.join(' > ')}</h5>
+    resultElem.innerHTML = `<span class="qdr-search-result__icon"></span>
+                   <div class="qdr-search-result__body"><h5 class="mt-0">${data.payload.titles.join(' > ')}</h5>
                    <p>${data.payload.text}</p></div>`;
     return resultElem;
   }

@@ -1,8 +1,9 @@
 import {createElementFromHTML} from "./helpers";
 import {SearchModal} from "./SearchModal";
-import img from '../images/logo_with_text.svg';
-
-// todo - on document ready
+import logo from '../images/logo_with_text.svg';
+import searchIcon from '../images/search.png';
+import fileIcon from '../images/document.png';
+import fileIconWhite from '../images/document-white.png';
 
 const innerModalHtml = `<div class="qdr-search" id="searchModal" tabindex="-1"
      aria-labelledby="searchModalLabel" aria-hidden="true">
@@ -26,9 +27,7 @@ const innerModalHtml = `<div class="qdr-search" id="searchModal" tabindex="-1"
 
              <div class="qdr-search__footer">
                  Powered by
-                 <span class="qdr-search__logo">
-                    <img src="${img}" alt="Qdrant logo">
-                 </span>
+                 <span class="qdr-search__logo"></span>
              </div>
          </div>
      </div>
@@ -38,14 +37,15 @@ const innerModalHtml = `<div class="qdr-search" id="searchModal" tabindex="-1"
 document.body.appendChild(createElementFromHTML(innerModalHtml));
 
 const createSearchModal = function (searchApiUrl) {
-  console.log('createSearchModal')
+  // todo: counter?
   if (document.querySelector('.qdr-search').length === 0) {
     const t = setTimeout(() => {
       createSearchModal(searchApiUrl);
       clearTimeout(t);
     }, 100);
+  } else {
+    return new SearchModal({searchApiUrl});
   }
-  return new SearchModal({searchApiUrl});
 }
 
 window.createSearchModal = createSearchModal;

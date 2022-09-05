@@ -62,10 +62,17 @@ module.exports = function (env, argv) {
     },
     devServer: {
       static: {
-        directory: path.join(__dirname, '/'),
+        directory: './',
       },
       port: 9000,
       hot: true,
+      devMiddleware: {
+        index: true,
+        mimeTypes: { phtml: 'text/html' },
+        publicPath: '/',
+        serverSideRender: true,
+        writeToDisk: true,
+      },
     },
     watchOptions: {
       poll: true,

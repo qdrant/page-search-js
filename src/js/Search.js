@@ -1,3 +1,5 @@
+import {isKeyPrintable} from "./helpers";
+
 /**
  * @class Search
  * @param {String} ref - query input DOM element - DOM element
@@ -16,10 +18,8 @@ export class Search {
 
     // listens when user types in the search input
     this.boundEventHandler = this.fetchData.bind(this)
-    // todo: only on chars
     this.ref.addEventListener('keyup', (e) => {
-      if (/['^+%&/()=?_\-~`;#$½{[\]}\\|<>@,]/gi.test(e.key)) {
-        console.log('key')
+      if (isKeyPrintable(e)) {
         this.boundEventHandler();
       }
     })
@@ -71,12 +71,19 @@ export class Search {
       return;
     }
 
-    const url = this.apiUrl + '/?q=' + this.ref.value;
+    // todo:
+    // const url = this.apiUrl + '/?q=' + this.ref.value;
+    const url = this.apiUrl;
     let reqVersion = this.#dataVersion + 1;
 
     fetch(url)
-      .then(res => res.json())
+      .then(res => {
+        if ((/20\d/).test(res.status)) {
+          return res.json();
+        }
+      })
       .then(data => {
+        console.log(data)
 
         if (reqVersion > this.#dataVersion) {
           this.data = data.result;

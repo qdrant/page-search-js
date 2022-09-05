@@ -4,14 +4,23 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="/dist/css/styles.min.css">
+
+    <!-- these styles used just for example, you don't need to copy them in your project-->
+    <style>
+       .button-wrapper {
+         width: 209px;
+       }
+    </style>
 </head>
 <body>
 
 
-<!-- Button trigger modal -->
-<button type="button" class="qdr-search-input-btn" data-target="#searchModal">
-    <i class="fa fa-search mr-3"></i> Search...
-</button>
+<div class="button-wrapper">
+    <!-- Button trigger modal -->
+    <button type="button" class="qdr-search-input-btn" data-target="#searchModal">
+        <i class="fa fa-search mr-3"></i> Search...
+    </button>
+</div>
 
 <h1>Example Page</h1>
 
@@ -19,7 +28,7 @@
 <script defer src="/dist/js/search.min.js" type="module"></script>
 <script defer>
   window.addEventListener('DOMContentLoaded', () => {
-    createSearchModal('temp/data.json');
+    createSearchModal('/dist/temp/data.json');
     console.log("DOM is ready");
   });
 </script>
