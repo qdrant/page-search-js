@@ -22,6 +22,11 @@ export class Search {
       if (isKeyPrintable(e)) {
         this.boundEventHandler();
       }
+      // if value deleted from the input
+      if (this.ref.value.trim().length === 0) {
+        this.data = [];
+        document.dispatchEvent(this.#updEvent);
+      }
     })
   }
 
@@ -66,14 +71,12 @@ export class Search {
    * ]}
    */
   fetchData() {
-    console.log('fetch')
     if (this.ref.value.trim().length === 0) {
       return;
     }
 
-    // todo:
-    // const url = this.apiUrl + '/?q=' + this.ref.value;
-    const url = this.apiUrl;
+    // todo: q?
+    const url = this.apiUrl + '?q=' + this.ref.value;
     let reqVersion = this.#dataVersion + 1;
 
     fetch(url)
@@ -83,8 +86,6 @@ export class Search {
         }
       })
       .then(data => {
-        console.log(data)
-
         if (reqVersion > this.#dataVersion) {
           this.data = data.result;
           this.#dataVersion = reqVersion;

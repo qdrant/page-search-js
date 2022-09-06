@@ -12,14 +12,31 @@ export class SearchModal {
       resultSelector: '.qdr-search__results',
     });
     this.searchInput = new Search({apiUrl: this.apiUrl})
+    this.activeResultIdx = null;
 
     // when a search modal is shown
-    this.boundEventHandler1 = this.setFocus.bind(this)
+    this.boundEventHandler1 = this.setFocusToInput.bind(this)
     document.addEventListener('qdrModalShow', this.boundEventHandler1);
 
     // when new search data if ready to be shown
     this.boundEventHandler2 = this.updateResult.bind(this)
     document.addEventListener('searchDataIsReady', this.boundEventHandler2);
+
+    // when arrows up or down pressed
+    this.boundEventHandler3 = this.navigateTroughResults.bind(this)
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        this.boundEventHandler3(e);
+      }
+    });
+  }
+
+  set activeResultIdx(newIdx) {
+    this._activeResultIdx = newIdx;
+  }
+
+  get activeResultIdx() {
+    return this._activeResultIdx;
   }
 
   /**
@@ -29,7 +46,7 @@ export class SearchModal {
    */
   generateSearchResult(data) {
     const resultElem = document.createElement('a');
-    resultElem.classList.add('media', 'qdr-search-result');
+    resultElem.classList.add('qdr-search-result');
     resultElem.href = generateUrlWithSelector(data);
     resultElem.innerHTML = `<span class="qdr-search-result__icon"></span>
                    <div class="qdr-search-result__body"><h5 class="mt-0">${data.payload.titles.join(' > ')}</h5>
@@ -39,13 +56,70 @@ export class SearchModal {
 
   updateResult() {
     const newResultChildren = [];
-    this.searchInput.data.forEach(res => {
-      newResultChildren.push(this.generateSearchResult(res));
+    this.activeResultIdx = null;
+    this.searchInput.data.forEach((result, i) => {
+      const resultElement = this.generateSearchResult(result);
+      resultElement.dataset.key = i;
+      newResultChildren.push(resultElement);
     });
     this.modal.updateResultChildren(newResultChildren);
   }
 
-  setFocus() {
+  /**
+   * sets focus to search input
+   */
+  setFocusToInput() {
     this.searchInput.ref.focus();
   }
+
+  /**
+   * sets focus to the result element with data-key === idx
+   * @param {number|string} idx - index
+   */
+  setFocusToResult(idx) {
+    const results = this.modal.result.querySelectorAll('.qdr-search-result')
+    const resultToFocus = [...results].find(el => {
+      return parseInt(el.dataset.key) === parseInt(idx);
+    });
+    resultToFocus.focus();
+  }
+
+  /**
+   * navigates through results with keyboard keys ArrowUp and ArrowDown
+   * @param {Event} e - event 'keyup' or 'keydown'
+   */
+  navigateTroughResults(e) {
+    let tempIdx;
+
+    if (e.key === 'ArrowUp') {
+      tempIdx = this.activeResultIdx - 1;
+
+      if (tempIdx >= 0) {
+        this.activeResultIdx = tempIdx;
+      } else {
+        // go to the input
+        this.activeResultIdx = null;
+        this.setFocusToInput();
+        return;
+      }
+    }
+
+    if (e.key === 'ArrowDown') {
+      if (this.activeResultIdx === null) {
+        tempIdx = 0;
+      } else {
+        tempIdx = this.activeResultIdx + 1;
+      }
+
+      if (tempIdx < this.searchInput.data.length) {
+        this.activeResultIdx = tempIdx;
+      } else {
+        // go to the first element
+        this.activeResultIdx = 0;
+      }
+    }
+
+    this.setFocusToResult(this.activeResultIdx);
+  }
+
 }

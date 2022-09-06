@@ -19,8 +19,7 @@ export const createElementFromHTML = function(htmlString) {
  * @return {string}
  */
 export const generateUrlWithSelector = function(data) {
-  // todo: remove replace
-  const url = new URL(data?.payload?.url.replace('https://qdrant.tech', 'http://localhost:1313'));
+  const url = new URL(data?.payload?.url);
   // pass an object
   url.searchParams.append('selector', window.btoa(data?.payload?.location));
 

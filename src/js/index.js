@@ -49,5 +49,3 @@ const createSearchModal = function (searchApiUrl) {
 }
 
 window.createSearchModal = createSearchModal;
-
-// todo: check in telegram
