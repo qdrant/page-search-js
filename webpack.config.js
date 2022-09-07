@@ -1,4 +1,6 @@
 const path = require('path');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
 
 module.exports = function (env, argv) {
 
@@ -11,7 +13,7 @@ module.exports = function (env, argv) {
     entry: {
       search: './src/js/index.js',
       scroll: './src/js/result-scroll.js',
-      styles: './src/scss/styles.scss',
+      // styles: './src/scss/styles.scss',
     },
     output: {
       path: path.resolve(__dirname, './dist/js'),
@@ -35,28 +37,24 @@ module.exports = function (env, argv) {
           test: /\.scss$/,
           exclude: /node_modules/,
 
-          type: 'asset/resource',
-          generator: {
-            filename: '../css/[name].min.css'
-          },
+          type: 'asset',
 
           use: [
-            "sass-loader",
+            MiniCssExtractPlugin.loader,
+            "css-loader",
+            "resolve-url-loader",
+            {
+              loader: 'sass-loader',
+              options: {
+                sourceMap: true,
+              }
+            }
           ]
         },
 
         {
           test: /\.(png|jpe?g|gif|svg)$/i,
-          use: [
-            {
-              loader: 'file-loader',
-              options: {
-                name: "[name].[ext]",
-                outputPath: '../images/',
-                publicPath: path.resolve(__dirname, './images/'),
-              }
-            },
-          ],
+          type: "asset/inline",
         },
       ],
     },
@@ -79,5 +77,6 @@ module.exports = function (env, argv) {
       ignored: /node_modules/
     },
     cache: false,
+    plugins: [new MiniCssExtractPlugin({filename: '../css/styles.min.css'})],
   };
 }

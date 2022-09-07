@@ -1,9 +1,7 @@
 import {createElementFromHTML} from "./helpers";
 import {SearchModal} from "./SearchModal";
-import logo from '../images/logo_with_text.svg';
-import searchIcon from '../images/search.png';
-import fileIcon from '../images/document.png';
-import fileIconWhite from '../images/document-white.png';
+
+import styles from '../scss/styles.scss';
 
 const initQdrantSearch = function ({searchApiUrl}) {
   const innerModalHtml = `<div class="qdr-search" id="searchModal" tabindex="-1"
