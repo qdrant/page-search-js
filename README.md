@@ -3,23 +3,23 @@ For an example look into `index.html`
 # Installation
 
 ```bash
-npm install ...
+npm install qdrant-page-search
 ```
 
-Add styles to the header tag:
+Add styles to the `head` tag:
 
 ```html
 <link rel="stylesheet" href="<path_to_the_plugin>/dist/css/styles.min.css">
 ```
 
-At the end of a body tag add:
+At the end of a `body` tag add:
 
 ```html
 
 <script defer src="<path_to_the_plugin>/dist/js/search.min.js" type="module"></script>
 <script defer>
     window.addEventListener('DOMContentLoaded', () => {
-        createSearchModal('your_search_API_URL');
+        initQdrantSearch({searchApiUrl: 'your_search_API_URL'});
     });
 </script>
 ```
@@ -37,19 +37,22 @@ And the button in the place you want to see it:
 ```html
 <!-- Button trigger modal -->
 <button type="button" class="qdr-search-input-btn" data-target="#searchModal">
-    <i class="fa fa-search mr-3"></i> Search...
+    Search...
 </button>
 ```
  
-# Build the project 
+# Development
+
+## Build the project
 
 ```bash
 npm install
 npm run build
 ```
 
-# Devevlopment
+## Develop mode
 
 ```bash
 npm install
 npm run dev
+```

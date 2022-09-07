@@ -1,9 +1,12 @@
 {
   "private": true,
-  "name": "page-search",
+  "name": "qdrant-page-search",
   "version": "1.0.0",
   "description": "Add markup for the search modal popup:",
-  "main": "src/js/index.js",
+  "author": "Qdrant Team <team@qdrant.tech> (https://qdrant.tech)",
+  "main": "dist/js/search.min.js",
+  "style": "dist/css/search.min.css",
+  "sass": "src/scss/styles.scss",
   "scripts": {
     "build": "webpack --mode=production",
     "dev": "webpack serve --mode=development --open --progress",
@@ -22,19 +25,16 @@
     "vector",
     "search"
   ],
-  "author": "qdrant",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/qdrant/page-search-js/issues"
   },
-  "homepage": "https://github.com/qdrant/page-search-js#readme",
+  "homepage": "https://github.com/qdrant/page-search-js",
   "devDependencies": {
     "@babel/core": "^7.18.13",
     "@babel/preset-env": "^7.18.10",
     "babel-loader": "^8.2.5",
     "css-loader": "^6.7.1",
-    "fast-sass-loader": "^2.0.1",
-    "file-loader": "^6.2.0",
     "mini-css-extract-plugin": "^2.6.1",
     "resolve-url-loader": "^5.0.0",
     "sass": "^1.54.6",

@@ -38,3 +38,5 @@ const initQdrantSearch = function ({searchApiUrl}) {
 }
 
 window.initQdrantSearch = initQdrantSearch;
+
+export default initQdrantSearch;
