@@ -1,5 +1,3 @@
-import {keys} from "./non-printable-keys";
-
 /**
  * Maces DOM node from html string
  * @param {string} htmlString
@@ -25,17 +23,3 @@ export const generateUrlWithSelector = function(data) {
 
   return url.toString();
 }
-
-// needed for the next function, a list of non-printable keyboard keys
-const allKeys = Object.keys(keys).reduce((acc, category) => {
-  return [...acc, ...keys[category]]
-}, []);
-
-/**
- * returns true if an event's property `key` is a code of printable key on the keyboard
- * @param {Event} e - keydown or keyup event object
- * @return {boolean}
- */
-export const isKeyPrintable = function(e) {
-  return allKeys.indexOf(e?.key) === -1;
-};

@@ -3,7 +3,7 @@ import {ModalWindow} from "./ModalWindow";
 import {Search} from "./Search";
 
 export class SearchModal {
-  constructor({searchApiUrl, themeColor}) {
+  constructor({searchApiUrl}) {
     this.apiUrl = searchApiUrl;
     this.modal = new ModalWindow({
       modalOuterSelector: '#searchModal',
@@ -15,18 +15,16 @@ export class SearchModal {
     this.activeResultIdx = null;
 
     // when a search modal is shown
-    this.boundEventHandler1 = this.setFocusToInput.bind(this)
-    document.addEventListener('qdrModalShow', this.boundEventHandler1);
+    document.addEventListener('qdrModalShow', this.setFocusToInput.bind(this));
 
     // when new search data if ready to be shown
-    this.boundEventHandler2 = this.updateResult.bind(this)
-    document.addEventListener('searchDataIsReady', this.boundEventHandler2);
+    document.addEventListener('searchDataIsReady', this.updateResult.bind(this));
 
     // when arrows up or down pressed
-    this.boundEventHandler3 = this.navigateTroughResults.bind(this)
+    const navigateTroughResultsHandler = this.navigateTroughResults.bind(this)
     document.addEventListener('keydown', e => {
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        this.boundEventHandler3(e);
+        navigateTroughResultsHandler(e);
       }
     });
   }
@@ -69,7 +67,7 @@ export class SearchModal {
    * sets focus to search input
    */
   setFocusToInput() {
-    this.searchInput.ref.focus();
+    this.searchInput.input.focus();
   }
 
   /**
@@ -77,7 +75,10 @@ export class SearchModal {
    * @param {number|string} idx - index
    */
   setFocusToResult(idx) {
-    const results = this.modal.result.querySelectorAll('.qdr-search-result')
+    const results = this.modal.result.querySelectorAll('.qdr-search-result');
+    if (results.length === 0) {
+      return;
+    }
     const resultToFocus = [...results].find(el => {
       return parseInt(el.dataset.key) === parseInt(idx);
     });

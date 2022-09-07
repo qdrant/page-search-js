@@ -29,7 +29,7 @@
 <script defer src="/dist/js/search.min.js" type="module"></script>
 <script defer>
   window.addEventListener('DOMContentLoaded', () => {
-    createSearchModal('/dist/temp/data.json');
+    initQdrantSearch({searchApiUrl: '/dist/temp/data.json'});
     console.log("DOM is ready");
   });
 </script>

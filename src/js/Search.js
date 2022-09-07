@@ -1,8 +1,6 @@
-import {isKeyPrintable} from "./helpers";
-
 /**
  * @class Search
- * @param {String} ref - query input DOM element - DOM element
+ * @param {String} input - query input DOM element - DOM element
  * @param {String} apiUrl - URL of the search API
  */
 export class Search {
@@ -10,32 +8,29 @@ export class Search {
   #dataVersion;
 
   constructor({apiUrl}) {
-    this.ref = document.querySelector('#searchInput');
+    this._input = document.querySelector('#searchInput');
     this.apiUrl = apiUrl;
-    this.data = [];
+    this._data = [];
+    this._error = undefined;
     this.#updEvent = new Event('searchDataIsReady');
     this.#dataVersion = 0;
 
-    // listens when user types in the search input
-    this.boundEventHandler = this.fetchData.bind(this)
-    this.ref.addEventListener('keyup', (e) => {
-      if (isKeyPrintable(e)) {
-        this.boundEventHandler();
-      }
-      // if value deleted from the input
-      if (this.ref.value.trim().length === 0) {
-        this.data = [];
+    this._input.addEventListener('input', (e) => {
+      if (e.target.value.trim().length === 0) {
+        this._data = [];
         document.dispatchEvent(this.#updEvent);
+      } else {
+        this.fetchData(e.target.value);
       }
     })
   }
 
-  get ref() {
-    return this._ref;
+  get input() {
+    return this._input;
   }
 
-  set ref(newRef) {
-    this._ref = newRef;
+  set input(newInput) {
+    this._input = newInput;
   }
 
   get data() {
@@ -44,6 +39,14 @@ export class Search {
 
   set data(newData) {
     this._data = newData;
+  }
+
+  get error() {
+    return this._error;
+  }
+
+  set error(newError) {
+    this._error = newError;
   }
 
   /**
@@ -70,27 +73,35 @@ export class Search {
    * ...
    * ]}
    */
-  fetchData() {
-    if (this.ref.value.trim().length === 0) {
+  fetchData(query) {
+    if (this.input.value.trim().length === 0) {
       return;
     }
+    
+    var url = new URL(this.apiUrl, document.location);
+    url.searchParams.append('q', this.input.value);
 
-    // todo: q?
-    const url = this.apiUrl + '?q=' + this.ref.value;
     let reqVersion = this.#dataVersion + 1;
 
     fetch(url)
       .then(res => {
-        if ((/20\d/).test(res.status)) {
+        if (res.ok) {
           return res.json();
+        } else {
+          return {result: [], error: res.statusText};
         }
       })
       .then(data => {
         if (reqVersion > this.#dataVersion) {
           this.data = data.result;
           this.#dataVersion = reqVersion;
+          this.error = data?.error;
           document.dispatchEvent(this.#updEvent);
         }
-      });
+      })
+      .catch(err => {
+        this.error = err.message;
+      })
+      ;
   }
 }

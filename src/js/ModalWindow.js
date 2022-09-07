@@ -19,11 +19,11 @@ export class ModalWindow {
     this.#showEvent = new Event('qdrModalShow');
     this.#hideEvent = new Event('qdrModalHide');
 
-    this.boundEventHandler1 = this.show.bind(this)
-    this.boundEventHandler2 = this.hide.bind(this)
+    const boundShowHandler = this.show.bind(this)
+    const boundHideHanler = this.hide.bind(this)
 
     // listens for clicks on the open button
-    this.openBtn.addEventListener('click', this.boundEventHandler1);
+    this.openBtn.addEventListener('click', boundShowHandler);
 
     // listens for clicks on the modal
     this.modal.addEventListener('click', (e) => {
@@ -32,14 +32,14 @@ export class ModalWindow {
 
       // if clicked on the close button or outside of the dialog block
       if (!isClickInsideDialog || isClickInsideCloseBtn) {
-        this.boundEventHandler2(e);
+        boundHideHanler(e);
       }
     });
 
     // listens for the Esc button is pressed
     document.addEventListener('keydown', (e) => {
       if (e.key === "Escape") {
-        this.boundEventHandler2(e);
+        boundHideHanler(e);
       }
     })
 
