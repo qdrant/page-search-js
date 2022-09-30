@@ -168,18 +168,29 @@ $modal-result-max-height: calc(#{$modal-dialog-max-height} - 68px * 2);
     .qdr-search-result__icon {
       background: url("../images/document-white.png") 50% 50% no-repeat;
     }
+
+    .qdr-search-result__paragraph-icon {
+      background: url("../images/paragraph-white.png") 50% 50% no-repeat;
+    }
   }
 
-  &__icon {
+  &__icon, &__paragraph-icon {
     position: absolute;
     display: block;
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     margin-right: 16px;
-    background: url("../images/document.png") 50% 50% no-repeat;
     background-size: initial;
     top: 50%;
     margin-top: -12px;
+  }
+
+  &__icon {
+    background: url("../images/document.png") 50% 50% no-repeat;
+  }
+
+  &__paragraph-icon {
+    background: url("../images/paragraph.png") 50% 50% no-repeat;
   }
 
   &__body {

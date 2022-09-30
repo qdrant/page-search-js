@@ -45,10 +45,14 @@ export class SearchModal {
   generateSearchResult(data) {
     const resultElem = document.createElement('a');
     resultElem.classList.add('qdr-search-result');
+    resultElem.target = '_blank';
     resultElem.href = generateUrlWithSelector(data);
-    resultElem.innerHTML = `<span class="qdr-search-result__icon"></span>
+
+    const iconClass = data.payload.tag === "p" ? "qdr-search-result__icon" : "qdr-search-result__paragraph-icon";
+
+    resultElem.innerHTML = `<span class="${iconClass}"></span>
                    <div class="qdr-search-result__body"><h5 class="mt-0">${data.payload.titles.join(' > ')}</h5>
-                   <p>${data.payload.text}</p></div>`;
+                   <p>${data?.highlight || data.payload.text}</p></div>`;
     return resultElem;
   }
 

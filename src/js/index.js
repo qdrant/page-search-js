@@ -13,7 +13,7 @@ const initQdrantSearch = function ({searchApiUrl}) {
                     <div class="qdr-search__icon">
                         <span class="search-icon"></span>
                     </div>
-                    <input type="text" class="qdr-search__input" placeholder="Search..."
+                    <input type="text" class="qdr-search__input" autocomplete="off" placeholder="Search..."
                           id="searchInput" aria-label="Search">
                 </div>
 
