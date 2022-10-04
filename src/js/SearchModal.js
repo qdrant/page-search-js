@@ -51,8 +51,8 @@ export class SearchModal {
     const iconClass = data.payload.tag === "p" ? "qdr-search-result__icon" : "qdr-search-result__paragraph-icon";
 
     resultElem.innerHTML = `<span class="${iconClass}"></span>
-                   <div class="qdr-search-result__body"><h5 class="mt-0">${data.payload.titles.join(' > ')}</h5>
-                   <p>${data?.highlight || data.payload.text}</p></div>`;
+                   <div class="qdr-search-result__body"><h5 class="mt-0">${data?.highlight || data.payload.text}</h5>
+                   <p>${data.payload.titles.join(' > ')}</p></div>`;
     return resultElem;
   }
 

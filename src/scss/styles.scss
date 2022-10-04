@@ -1,10 +1,4 @@
-$padding-horizontal: 0.75rem;
-$modal-vertical-margin: 80px;
-@media (min-width: 992px) {
-  $modal-vertical-margin: 110px;
-}
-$modal-dialog-max-height: calc(100vh - #{$modal-vertical-margin} * 2);
-$modal-result-max-height: calc(#{$modal-dialog-max-height} - 68px * 2);
+@use "variables" as *;
 
 // trigger button
 .qdr-search-input-btn {
@@ -14,12 +8,12 @@ $modal-result-max-height: calc(#{$modal-dialog-max-height} - 68px * 2);
   margin-bottom: 6px;
   margin-left: 8px;
   padding: 8px 10px;
+  cursor: pointer;
   text-align: left;
-  color: #6d7376;
-  border: 1px solid #888c8e;
+  color: $color-primary;
+  border: 1px solid $color-accent-light;
   border-radius: 4px;
   background: none;
-  cursor: pointer;
 
   &:hover {
     color: var(--brand-secondary);
@@ -38,8 +32,7 @@ $modal-result-max-height: calc(#{$modal-dialog-max-height} - 68px * 2);
   left: 0;
   transition: opacity 0.4s ease-in;
   opacity: 0;
-  background-color: rgb(0, 0, 0);
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: $modal-overlay-background;
   overflow: auto;
 
 
@@ -52,9 +45,9 @@ $modal-result-max-height: calc(#{$modal-dialog-max-height} - 68px * 2);
     max-width: 800px;
     min-height: 316px;
     max-height: $modal-dialog-max-height;
+    margin: 80px 10px;
     border-radius: 8px;
     background-color: #fefefe;
-    margin: 80px 10px;
     @media (min-width: 992px) {
       margin-top: $modal-vertical-margin;
       margin-right: auto;
@@ -65,7 +58,7 @@ $modal-result-max-height: calc(#{$modal-dialog-max-height} - 68px * 2);
   &__header {
     padding: 1rem 0;
     position: relative;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid #B2BFE8;
   }
 
   &__icon {
@@ -87,15 +80,15 @@ $modal-result-max-height: calc(#{$modal-dialog-max-height} - 68px * 2);
     z-index: 3;
     top: 20px;
     right: $padding-horizontal;
+    cursor: pointer;
     opacity: .5;
-    color: #000;
+    color: $color-primary;
     border: 0;
     background: transparent;
     text-shadow: 0 1px 0 #fff;
     font-size: 1.5rem;
     font-weight: 700;
     line-height: 1;
-    cursor: pointer;
   }
 
   &__input {
@@ -104,12 +97,13 @@ $modal-result-max-height: calc(#{$modal-dialog-max-height} - 68px * 2);
     height: calc(1.5em + 0.75rem);
     padding: 0 30px 0 52px;
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-    color: #495057;
+    color: $color-primary;
     border: 0;
     border-radius: .25rem;
     outline: none;
     background-color: #fff;
     background-clip: padding-box;
+    font-family: $font-family;
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.5;
@@ -133,57 +127,34 @@ $modal-result-max-height: calc(#{$modal-dialog-max-height} - 68px * 2);
     justify-content: end;
     padding: 18px $padding-horizontal 16px;
     text-align: right;
-    color: #a8adb0;
+    color: $color-accent-dark;
+    border-top: 1px solid $color-accent-light;
     font-size: 14px;
     line-height: 1;
-    border-top: 1px solid #dee2e6;
   }
 
   &__logo {
     display: inline-block;
     width: 72px;
     height: 24px;
+    margin-top: -6px;
     margin-right: 4px;
     margin-left: 8px;
-    margin-top: -6px;
     background: url("../images/logo_with_text.svg") 0 0 no-repeat;
     background-size: contain;
   }
 }
 
+// result
 .qdr-search-result {
   display: flex;
   margin: 8px 0;
-  padding: 20px 16px;
-  color: #6d7376;
-  border: 1px solid lightgrey;
-  border-radius: 8px;
-  text-decoration: none;
+  padding: 10px 8px;
   position: relative;
-
-  &:hover {
-    color: white;
-    background: #182b3a;
-
-    .qdr-search-result__icon {
-      background: url("../images/document-white.png") 50% 50% no-repeat;
-    }
-
-    .qdr-search-result__paragraph-icon {
-      background: url("../images/paragraph-white.png") 50% 50% no-repeat;
-    }
-  }
-
-  &__icon, &__paragraph-icon {
-    position: absolute;
-    display: block;
-    width: 26px;
-    height: 26px;
-    margin-right: 16px;
-    background-size: initial;
-    top: 50%;
-    margin-top: -12px;
-  }
+  text-decoration: none;
+  color: $color-primary;
+  border: 1px solid $color-accent-light;
+  border-radius: 7px;
 
   &__icon {
     background: url("../images/document.png") 50% 50% no-repeat;
@@ -193,19 +164,58 @@ $modal-result-max-height: calc(#{$modal-dialog-max-height} - 68px * 2);
     background: url("../images/paragraph.png") 50% 50% no-repeat;
   }
 
+  &__icon, &__paragraph-icon {
+    display: block;
+    width: 20px;
+    height: 20px;
+    margin-top: -12px;
+    margin-right: 8px;
+    position: absolute;
+    top: 50%;
+    background-size: contain;
+    fill: $color-primary;
+    stroke: $color-primary;
+    filter: invert(20%) sepia(12%) saturate(4683%) hue-rotate(110deg) brightness(60%) contrast(92%);
+  }
+
+  &:hover {
+    color: white;
+    background: $color-primary;
+
+    .qdr-search-result__icon {
+      background: url("../images/document-white.png") 50% no-repeat;
+      background-size: contain;
+      filter: none;
+    }
+
+    .qdr-search-result__paragraph-icon {
+      background: url("../images/paragraph-white.png") 50% no-repeat;
+      background-size: contain;
+      filter: none;
+    }
+  }
+
   &__body {
     padding-left: calc(24px + 16px);
+
     h5 {
-      font-size: 20px;
+      margin: 0 0 7px;
+      font-family: $font-family;
+      font-size: 16px;
       font-weight: 400;
-      margin: 0 0 14px;
       line-height: 1;
     }
 
     p {
-      line-height: 1.5;
-      font-size: 14px;
       margin: 0;
+      color: $color-accent-dark;
+      font-family: $font-family;
+      font-size: 12px;
+      line-height: 1.5;
     }
+  }
+
+  &:hover .qdr-search-result__body p {
+    color: $color-accent-light;
   }
 }
