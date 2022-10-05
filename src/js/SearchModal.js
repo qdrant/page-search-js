@@ -1,4 +1,4 @@
-import {generateUrlWithSelector} from "./helpers";
+import {generateUrlWithSelector, simulateClick} from "./helpers";
 import {ModalWindow} from "./ModalWindow";
 import {Search} from "./Search";
 
@@ -20,13 +20,22 @@ export class SearchModal {
     // when new search data if ready to be shown
     document.addEventListener('searchDataIsReady', this.updateResult.bind(this));
 
-    // when arrows up or down pressed
+    // when a some key pressed
     const navigateTroughResultsHandler = this.navigateTroughResults.bind(this)
     document.addEventListener('keydown', e => {
+      // navigation if arrows up or down pressed
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault();
         navigateTroughResultsHandler(e);
       }
+      // on Enter - go by the active link
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        // simulate click on the active result
+        simulateClick(this.modal.result.querySelector(`.qdr-search-result[data-key="${this.activeResultIdx}"]`));
+      }
     });
+
   }
 
   set activeResultIdx(newIdx) {
@@ -45,7 +54,6 @@ export class SearchModal {
   generateSearchResult(data) {
     const resultElem = document.createElement('a');
     resultElem.classList.add('qdr-search-result');
-    resultElem.target = '_blank';
     resultElem.href = generateUrlWithSelector(data);
 
     const iconClass = data.payload.tag === "p" ? "qdr-search-result__icon" : "qdr-search-result__paragraph-icon";
@@ -53,9 +61,13 @@ export class SearchModal {
     resultElem.innerHTML = `<span class="${iconClass}"></span>
                    <div class="qdr-search-result__body"><h5 class="mt-0">${data?.highlight || data.payload.text}</h5>
                    <p>${data.payload.titles.join(' > ')}</p></div>`;
+
     return resultElem;
   }
 
+  /**
+   * updates results elements for new data
+   */
   updateResult() {
     const newResultChildren = [];
     this.activeResultIdx = null;
@@ -63,6 +75,11 @@ export class SearchModal {
       const resultElement = this.generateSearchResult(result);
       resultElement.dataset.key = i;
       newResultChildren.push(resultElement);
+
+      resultElement.addEventListener('mouseover', e => {
+        this.activeResultIdx = parseInt(resultElement.dataset.key);
+        this.addActiveClassToResult(this.activeResultIdx);
+      });
     });
     this.modal.updateResultChildren(newResultChildren);
   }
@@ -78,15 +95,20 @@ export class SearchModal {
    * sets focus to the result element with data-key === idx
    * @param {number|string} idx - index
    */
-  setFocusToResult(idx) {
+  addActiveClassToResult(idx) {
     const results = this.modal.result.querySelectorAll('.qdr-search-result');
     if (results.length === 0) {
       return;
     }
-    const resultToFocus = [...results].find(el => {
+    [...results].forEach(el => {
+      if (el.classList.contains('active')) {
+        el.classList.remove('active');
+      }
+    });
+    const resultToActivate = [...results].find(el => {
       return parseInt(el.dataset.key) === parseInt(idx);
     });
-    resultToFocus.focus();
+    resultToActivate.classList.add('active');
   }
 
   /**
@@ -102,10 +124,8 @@ export class SearchModal {
       if (tempIdx >= 0) {
         this.activeResultIdx = tempIdx;
       } else {
-        // go to the input
-        this.activeResultIdx = null;
-        this.setFocusToInput();
-        return;
+        // set index to the last result
+        this.activeResultIdx = this.searchInput.data.length - 1;
       }
     }
 
@@ -119,12 +139,14 @@ export class SearchModal {
       if (tempIdx < this.searchInput.data.length) {
         this.activeResultIdx = tempIdx;
       } else {
-        // go to the first element
+        // set index to the first element
         this.activeResultIdx = 0;
       }
     }
 
-    this.setFocusToResult(this.activeResultIdx);
+    // add an 'active' class to the element with data-key == this.activeResultIdx
+    this.addActiveClassToResult(this.activeResultIdx);
+
   }
 
 }

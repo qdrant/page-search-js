@@ -56,3 +56,9 @@ npm run build
 npm install
 npm run dev
 ```
+
+## Styles
+
+To change an appearance of modal window you can:
+- overwrite classes styles in your own css file **or**
+- change variables values in `src/scss/_variables.scss` and rebuild styles file.

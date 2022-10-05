@@ -4,9 +4,6 @@
 .qdr-search-input-btn {
   display: block;
   width: 90%;
-  margin-right: 8px;
-  margin-bottom: 6px;
-  margin-left: 8px;
   padding: 8px 10px;
   cursor: pointer;
   text-align: left;
@@ -73,6 +70,7 @@
     border: 0;
     background: url("../images/search.png") 50% 50% no-repeat;
     background-size: initial;
+    filter: invert(20%) sepia(12%) saturate(4683%) hue-rotate(210deg) brightness(140%) contrast(92%);
   }
 
   &__close {
@@ -81,14 +79,17 @@
     top: 20px;
     right: $padding-horizontal;
     cursor: pointer;
-    opacity: .5;
-    color: $color-primary;
+    color: $color-accent-dark;
     border: 0;
     background: transparent;
     text-shadow: 0 1px 0 #fff;
     font-size: 1.5rem;
     font-weight: 700;
     line-height: 1;
+
+    &:hover {
+      color: $color-primary;
+    }
   }
 
   &__input {
@@ -127,10 +128,19 @@
     justify-content: end;
     padding: 18px $padding-horizontal 16px;
     text-align: right;
-    color: $color-accent-dark;
     border-top: 1px solid $color-accent-light;
-    font-size: 14px;
-    line-height: 1;
+
+    a {
+      display: flex;
+      text-decoration: none;
+      color: $color-accent-dark;
+      font-size: 14px;
+      line-height: 1;
+
+      &:hover {
+        color: $color-primary;
+      }
+    }
   }
 
   &__logo {
@@ -147,7 +157,7 @@
 
 // result
 .qdr-search-result {
-  display: flex;
+  display: block;
   margin: 8px 0;
   padding: 10px 8px;
   position: relative;
@@ -157,11 +167,11 @@
   border-radius: 7px;
 
   &__icon {
-    background: url("../images/document.png") 50% 50% no-repeat;
+    background: $file-icon 50% 50% no-repeat;
   }
 
   &__paragraph-icon {
-    background: url("../images/paragraph.png") 50% 50% no-repeat;
+    background: $paragraph-icon 50% 50% no-repeat;
   }
 
   &__icon, &__paragraph-icon {
@@ -175,23 +185,24 @@
     background-size: contain;
     fill: $color-primary;
     stroke: $color-primary;
-    filter: invert(20%) sepia(12%) saturate(4683%) hue-rotate(110deg) brightness(60%) contrast(92%);
+    filter: $icons-filter;
   }
 
-  &:hover {
+  //&:hover,
+  &.active {
     color: white;
     background: $color-primary;
 
     .qdr-search-result__icon {
-      background: url("../images/document-white.png") 50% no-repeat;
+      background: $file-icon 50% no-repeat;
       background-size: contain;
-      filter: none;
+      filter: $icons-hover-filter;
     }
 
     .qdr-search-result__paragraph-icon {
-      background: url("../images/paragraph-white.png") 50% no-repeat;
+      background: $paragraph-icon 50% no-repeat;
       background-size: contain;
-      filter: none;
+      filter: $icons-hover-filter;
     }
   }
 
@@ -215,7 +226,15 @@
     }
   }
 
-  &:hover .qdr-search-result__body p {
-    color: $color-accent-light;
+  //&:hover .qdr-search-result__body,
+  &.active .qdr-search-result__body {
+
+    p {
+      color: $color-accent-light;
+    }
+
+    b {
+      text-decoration: underline;
+    }
   }
 }
