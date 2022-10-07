@@ -24,9 +24,11 @@ const initQdrantSearch = function ({searchApiUrl}) {
 
             <div class="qdr-search__results"></div>
 
-            <div class="qdr-search__footer">
-                Powered by
-                <span class="qdr-search__logo"></span>
+            <div class="qdr-search__footer"> 
+                <a href="https://qdrant.tech/" target="_blank" rel="nofollow">
+                    Powered by
+                    <span class="qdr-search__logo"></span>
+                </a>
             </div>
         </div>
     </div>

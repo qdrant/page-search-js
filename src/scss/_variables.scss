@@ -1,0 +1,25 @@
+$padding-horizontal: 0.75rem;
+$modal-vertical-margin: 80px;
+@media (min-width: 992px) {
+  $modal-vertical-margin: 110px;
+}
+
+$modal-dialog-max-height: calc(100vh - #{$modal-vertical-margin} * 2);
+$modal-result-max-height: calc(#{$modal-dialog-max-height} - 68px * 2);
+
+$font-family: inherit, sans-serif;
+
+// colors
+$color-primary: #24386C; // text, backgrounds
+$color-accent-dark: #7589BE; // text in results
+$color-accent-light: #B2BFE8; // borders, notes
+
+$modal-overlay-background: rgba(0, 0, 0, 0.4);
+
+// icons for results
+$file-icon: url("../images/document.png");
+$paragraph-icon: url("../images/paragraph.png");
+
+// to change color of icons with css filters
+$icons-filter: invert(20%) sepia(12%) saturate(4683%) hue-rotate(110deg) brightness(60%) contrast(92%);
+$icons-hover-filter:  grayscale(1) brightness(100);
