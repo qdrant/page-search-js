@@ -20,7 +20,7 @@ export class SearchModal {
     // when new search data if ready to be shown
     document.addEventListener('searchDataIsReady', this.updateResult.bind(this));
 
-    // when a some key pressed
+    // when any key pressed
     const navigateTroughResultsHandler = this.navigateTroughResults.bind(this)
     document.addEventListener('keydown', e => {
       // navigation if arrows up or down pressed
