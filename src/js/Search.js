@@ -6,6 +6,7 @@
 export class Search {
   #updEvent;
   #dataVersion;
+  #reqVersion;
 
   constructor({apiUrl}) {
     this._input = document.querySelector('#searchInput');
@@ -14,6 +15,7 @@ export class Search {
     this._error = undefined;
     this.#updEvent = new Event('searchDataIsReady');
     this.#dataVersion = 0;
+    this.#reqVersion = 0;
 
     this._input.addEventListener('input', (e) => {
       if (e.target.value.trim().length === 0) {
@@ -77,31 +79,38 @@ export class Search {
     if (this.input.value.trim().length === 0) {
       return;
     }
-    
-    var url = new URL(this.apiUrl, document.location);
+
+    const url = new URL(this.apiUrl, document.location);
     url.searchParams.append('q', this.input.value);
 
-    let reqVersion = this.#dataVersion + 1;
+    let reqVersion = this.#reqVersion + 1;
+    this.#reqVersion += 1;
 
-    fetch(url)
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          return {result: [], error: res.statusText};
-        }
-      })
-      .then(data => {
-        if (reqVersion > this.#dataVersion) {
-          this.data = data.result;
-          this.#dataVersion = reqVersion;
-          this.error = data?.error;
-          document.dispatchEvent(this.#updEvent);
-        }
-      })
-      .catch(err => {
-        this.error = err.message;
-      })
-      ;
+    const t = setTimeout(() => {
+      clearTimeout(t);
+
+      if (this.#reqVersion <= reqVersion) {
+
+        fetch(url)
+          .then(res => {
+            if (res.ok) {
+              return res.json();
+            } else {
+              return {result: [], error: res.statusText};
+            }
+          })
+          .then(data => {
+            if (reqVersion > this.#dataVersion) {
+              this.#dataVersion = reqVersion;
+              this.data = data.result;
+              this.error = data?.error;
+              document.dispatchEvent(this.#updEvent);
+            }
+          })
+          .catch(err => {
+            this.error = err.message;
+          });
+      }
+    }, 100);
   }
 }
