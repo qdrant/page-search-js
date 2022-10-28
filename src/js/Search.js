@@ -8,9 +8,10 @@ export class Search {
   #dataVersion;
   #reqVersion;
 
-  constructor({apiUrl}) {
+  constructor({apiUrl, section}) {
     this._input = document.querySelector('#searchInput');
     this.apiUrl = apiUrl;
+    this.section = section;
     this._data = [];
     this._error = undefined;
     this.#updEvent = new Event('searchDataIsReady');
@@ -82,6 +83,9 @@ export class Search {
 
     const url = new URL(this.apiUrl, document.location);
     url.searchParams.append('q', this.input.value);
+    if (this.section) {
+      url.searchParams.append('section', this.section);
+    }
 
     let reqVersion = this.#reqVersion + 1;
     this.#reqVersion += 1;

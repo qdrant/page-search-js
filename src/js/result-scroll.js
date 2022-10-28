@@ -3,7 +3,7 @@ $(document).ready(() => {
   if (selector) {
     console.log(window.atob(selector))
     const element = document.querySelector(window.atob(selector));
-    const topOffset = 45;
+    const topOffset = 250;
     const elementPosition = element.getBoundingClientRect().top;
     const offsetPosition = elementPosition + window.pageYOffset - topOffset;
 
@@ -13,7 +13,7 @@ $(document).ready(() => {
     });
 
     const t1 = setTimeout(() => {
-      element.style.backgroundColor = 'rgba(255,250,215,0.53)'
+      element.style.backgroundColor = 'rgba(255,246,188,0.73)'
       clearTimeout(t1);
     }, 1500);
 

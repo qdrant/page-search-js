@@ -3,7 +3,7 @@ import {SearchModal} from "./SearchModal";
 
 import styles from '../scss/styles.scss';
 
-const initQdrantSearch = function ({searchApiUrl}) {
+const initQdrantSearch = function ({searchApiUrl, section}) {
   const innerModalHtml = `<div class="qdr-search" id="searchModal" tabindex="-1"
     aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="qdr-search__dialog">
@@ -33,10 +33,9 @@ const initQdrantSearch = function ({searchApiUrl}) {
         </div>
     </div>
   </div>`;
-
   // adds modal markup to the page
   document.body.appendChild(createElementFromHTML(innerModalHtml));
-  return new SearchModal({searchApiUrl});
+  return new SearchModal({searchApiUrl, section});
 }
 
 window.initQdrantSearch = initQdrantSearch;

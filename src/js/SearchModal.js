@@ -3,15 +3,17 @@ import {ModalWindow} from "./ModalWindow";
 import {Search} from "./Search";
 
 export class SearchModal {
-  constructor({searchApiUrl}) {
+  constructor({searchApiUrl, section}) {
     this.apiUrl = searchApiUrl;
+    this.section = section;
     this.modal = new ModalWindow({
       modalOuterSelector: '#searchModal',
       modalDialogSelector: '.qdr-search__dialog',
       closeBtnSelector: '.qdr-search__close',
       resultSelector: '.qdr-search__results',
     });
-    this.searchInput = new Search({apiUrl: this.apiUrl})
+
+    this.searchInput = new Search({apiUrl: this.apiUrl, section: this.section});
     this.activeResultIdx = null;
 
     // when a search modal is shown

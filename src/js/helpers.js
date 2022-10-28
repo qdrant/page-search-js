@@ -17,7 +17,7 @@ export const createElementFromHTML = function (htmlString) {
  * @return {string}
  */
 export const generateUrlWithSelector = function (data) {
-  const url = new URL(data?.payload?.url);
+  const url = new URL(data?.payload?.url, window.location.origin);
   // pass an object
   url.searchParams.append('selector', window.btoa(data?.payload?.location));
 

@@ -120,6 +120,10 @@
     max-height: $modal-result-max-height;
     padding: 8px $padding-horizontal;
     overflow-y: scroll;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   &__footer {
