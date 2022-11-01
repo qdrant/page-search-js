@@ -84,6 +84,7 @@ export class SearchModal {
       });
     });
     this.modal.updateResultChildren(newResultChildren);
+    this.addActiveClassToResult(0);
   }
 
   /**
