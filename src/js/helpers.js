@@ -30,6 +30,9 @@ export const generateUrlWithSelector = function (data) {
  * @param {Element} elem  the element to simulate a click on
  */
 export const simulateClick = function (elem) {
+  if (!elem) {
+    return;
+  }
   // Create our event (with options)
   const evt = new MouseEvent('click', {
     bubbles: true,
