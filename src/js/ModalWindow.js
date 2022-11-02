@@ -65,8 +65,11 @@ export class ModalWindow {
   /**
    * @param {Array} newResultChildren - array of DOM Nodes
    */
-  updateResultChildren(newResultChildren) {
+  updateResultChildren(newResultChildren, callback) {
     this.result.replaceChildren(...newResultChildren);
+    if (callback && typeof callback === 'function') {
+      callback();
+    }
   }
 
 }

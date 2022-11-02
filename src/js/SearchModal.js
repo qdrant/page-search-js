@@ -83,8 +83,10 @@ export class SearchModal {
         this.addActiveClassToResult(this.activeResultIdx);
       });
     });
-    this.modal.updateResultChildren(newResultChildren);
-    this.addActiveClassToResult(0);
+    this.modal.updateResultChildren(newResultChildren, () => {
+      this.activeResultIdx = 0;
+      this.addActiveClassToResult(this.activeResultIdx);
+    });
   }
 
   /**
