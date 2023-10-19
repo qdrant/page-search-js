@@ -1,7 +1,6 @@
 $(document).ready(() => {
   const selector = new URLSearchParams(window.location.search).get('selector');
   if (selector) {
-    console.log(window.atob(selector))
     const element = document.querySelector(window.atob(selector));
     const topOffset = 250;
     const elementPosition = element.getBoundingClientRect().top;
@@ -19,6 +18,11 @@ $(document).ready(() => {
 
     const t2 = setTimeout(() => {
       delete element.style.removeProperty('background-color');
+
+      const url = new URL(window.location);
+      url.searchParams.delete('selector');
+      history.replaceState(null, null, url)
+
       clearTimeout(t2);
     }, 3000);
 
