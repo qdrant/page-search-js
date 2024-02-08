@@ -1,10 +1,10 @@
-$(document).ready(() => {
+(function() {
   const selector = new URLSearchParams(window.location.search).get('selector');
   if (selector) {
     const element = document.querySelector(window.atob(selector));
     const topOffset = 250;
     const elementPosition = element.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - topOffset;
+    const offsetPosition = elementPosition + window.scrollY - topOffset;
 
     window.scrollTo({
       top: offsetPosition,
@@ -27,4 +27,4 @@ $(document).ready(() => {
     }, 3000);
 
   }
-});
+})();
