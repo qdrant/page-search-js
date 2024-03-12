@@ -16,10 +16,14 @@ export const createElementFromHTML = function (htmlString) {
  * @param {string} data
  * @return {string}
  */
-export const generateUrlWithSelector = function (data) {
+export const generateUrlWithSelector = function (data, query = null) {
+  // console.log(data);
   const url = new URL(data?.payload?.url, window.location.origin);
   // pass an object
   url.searchParams.append('selector', window.btoa(data?.payload?.location));
+  if (query) {
+    url.searchParams.append('q', query);
+  }
 
   return url.toString();
 }
