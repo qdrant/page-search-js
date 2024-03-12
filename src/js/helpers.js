@@ -14,12 +14,16 @@ export const createElementFromHTML = function (htmlString) {
 /**
  * adds an encoded in base64 selector to the url
  * @param {string} data
+ * @param {string|null} query
  * @return {string}
  */
-export const generateUrlWithSelector = function (data) {
+export const generateUrlWithSelector = function (data, query = null) {
   const url = new URL(data?.payload?.url, window.location.origin);
   // pass an object
   url.searchParams.append('selector', window.btoa(data?.payload?.location));
+  if (query) {
+    url.searchParams.append('q', query);
+  }
 
   return url.toString();
 }

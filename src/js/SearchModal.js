@@ -56,7 +56,7 @@ export class SearchModal {
   generateSearchResult(data) {
     const resultElem = document.createElement('a');
     resultElem.classList.add('qdr-search-result');
-    resultElem.href = generateUrlWithSelector(data);
+    resultElem.href = generateUrlWithSelector(data, this.searchInput.input?.value);
 
     const iconClass = data.payload.tag === "p" ? "qdr-search-result__icon" : "qdr-search-result__paragraph-icon";
 
