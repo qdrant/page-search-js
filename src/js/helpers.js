@@ -14,6 +14,7 @@ export const createElementFromHTML = function (htmlString) {
 /**
  * adds an encoded in base64 selector to the url
  * @param {string} data
+ * @param {string|null} query
  * @return {string}
  */
 export const generateUrlWithSelector = function (data, query = null) {
