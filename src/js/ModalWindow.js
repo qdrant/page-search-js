@@ -11,7 +11,7 @@ export class ModalWindow {
     this.modal = document.querySelector(modalOuterSelector);
     // an outer element - a dialog window
     this.dialog = document.querySelector(modalDialogSelector);
-    this.openBtn = document.querySelector('[data-target="#searchModal"]');
+    this.openBtns = document.querySelectorAll('[data-target="#searchModal"]');
     this.closeBtn = this.modal.querySelector(closeBtnSelector);
     this.result = this.modal.querySelector(resultSelector);
 
@@ -22,8 +22,9 @@ export class ModalWindow {
     const boundShowHandler = this.show.bind(this)
     const boundHideHanler = this.hide.bind(this)
 
-    // listens for clicks on the open button
-    this.openBtn.addEventListener('click', boundShowHandler);
+    // listens for clicks on the open buttons
+    this.openBtns.forEach(btn => btn.addEventListener('click', boundShowHandler));
+
 
     // listens for clicks on the modal
     this.modal.addEventListener('click', (e) => {
