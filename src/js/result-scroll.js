@@ -1,4 +1,4 @@
-(function() {
+document.addEventListener('DOMContentLoaded', () => {
   const selector = new URLSearchParams(window.location.search).get('selector');
   if (selector) {
     const element = document.querySelector(window.atob(selector));
@@ -27,4 +27,4 @@
     }, 3000);
 
   }
-})();
+});

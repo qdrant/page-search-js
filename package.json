@@ -1,6 +1,6 @@
 {
   "name": "qdrant-page-search",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Add markup for the search modal popup:",
   "author": "Qdrant Team <team@qdrant.tech> (https://qdrant.tech)",
   "main": "dist/js/search.min.js",
