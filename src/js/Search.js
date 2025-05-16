@@ -8,10 +8,11 @@ export class Search {
   #dataVersion;
   #reqVersion;
 
-  constructor({apiUrl, section}) {
+  constructor({apiUrl, section, partition}) {
     this._input = document.querySelector('#searchInput');
     this.apiUrl = apiUrl;
     this.section = section;
+    this.partition = partition;
     this._data = [];
     this._error = undefined;
     this.#updEvent = new Event('searchDataIsReady');
@@ -69,7 +70,8 @@ export class Search {
    *    "Qdrant - Quick Start",
    *    "Add points"
    *  ],
-   *  "url": "https://qdrant.tech/documentation/quick_start/"
+   *  "url": "https://qdrant.tech/documentation/quick_start/",
+   *  "partition": "cloud"
    * },
    * "score": 0.96700734
    * },
@@ -85,6 +87,9 @@ export class Search {
     url.searchParams.append('q', this.input.value);
     if (this.section) {
       url.searchParams.append('section', this.section);
+    }
+    if (this.partition) {
+      url.searchParams.append('partition', this.partition);
     }
 
     let reqVersion = this.#reqVersion + 1;

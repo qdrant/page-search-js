@@ -19,7 +19,12 @@ At the end of a `body` tag add:
 <script defer src="<path_to_the_plugin>/dist/js/search.min.js" type="module"></script>
 <script defer>
     window.addEventListener('DOMContentLoaded', () => {
-        initQdrantSearch({searchApiUrl: 'your_search_API_URL'});
+        initQdrantSearch({
+            searchApiUrl: 'your_search_API_URL',
+            // optional
+            // section: 'your_section',
+            // partition: 'your_partition'
+        });
     });
 </script>
 ```
