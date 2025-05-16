@@ -3,9 +3,10 @@ import {ModalWindow} from "./ModalWindow";
 import {Search} from "./Search";
 
 export class SearchModal {
-  constructor({searchApiUrl, section}) {
+  constructor({searchApiUrl, section, partition}) {
     this.apiUrl = searchApiUrl;
     this.section = section;
+    this.partition = partition;
     this.modal = new ModalWindow({
       modalOuterSelector: '#searchModal',
       modalDialogSelector: '.qdr-search__dialog',
@@ -13,7 +14,7 @@ export class SearchModal {
       resultSelector: '.qdr-search__results',
     });
 
-    this.searchInput = new Search({apiUrl: this.apiUrl, section: this.section});
+    this.searchInput = new Search({apiUrl: this.apiUrl, section: this.section, partition: this.partition});
     this.activeResultIdx = null;
 
     // when a search modal is shown
