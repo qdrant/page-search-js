@@ -17,8 +17,18 @@ export class SearchModal {
     this.searchInput = new Search({apiUrl: this.apiUrl, section: this.section, partition: this.partition});
     this.activeResultIdx = null;
 
+    let isModalShown = false;
+
+    const setFocusToInput = this.setFocusToInput.bind(this);
     // when a search modal is shown
-    document.addEventListener('qdrModalShow', this.setFocusToInput.bind(this));
+    document.addEventListener('qdrModalShow', () => {
+      setFocusToInput();
+      isModalShown = true;
+    });
+
+    document.addEventListener('qdrModalHide', () => {
+      isModalShown = false;
+    });
 
     // when new search data if ready to be shown
     document.addEventListener('searchDataIsReady', this.updateResult.bind(this));
@@ -26,6 +36,10 @@ export class SearchModal {
     // when any key pressed
     const navigateTroughResultsHandler = this.navigateTroughResults.bind(this)
     document.addEventListener('keydown', e => {
+      if (!isModalShown) {
+        return;
+      }
+
       // navigation if arrows up or down pressed
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         e.preventDefault();
