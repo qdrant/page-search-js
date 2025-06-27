@@ -1,9 +1,13 @@
-import {createElementFromHTML} from "./helpers";
-import {SearchModal} from "./SearchModal";
+import { createElementFromHTML } from './helpers.js';
+import { SearchModal } from './SearchModal.js';
 
-import styles from '../scss/styles.scss';
-
-const initQdrantSearch = function ({searchApiUrl, section, partition}) {
+const initQdrantSearch = ({
+  searchApiUrl,
+  section,
+  partition,
+  useDirectQdrant = false,
+  qdrantConfig = {},
+}) => {
   const innerModalHtml = `<div class="qdr-search" id="searchModal" tabindex="-1"
     aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="qdr-search__dialog">
@@ -24,7 +28,7 @@ const initQdrantSearch = function ({searchApiUrl, section, partition}) {
 
             <div class="qdr-search__results"></div>
 
-            <div class="qdr-search__footer"> 
+            <div class="qdr-search__footer">
                 <a href="https://qdrant.tech/" target="_blank" rel="nofollow">
                     Powered by
                     <span class="qdr-search__logo"></span>
@@ -35,8 +39,14 @@ const initQdrantSearch = function ({searchApiUrl, section, partition}) {
   </div>`;
   // adds modal markup to the page
   document.body.appendChild(createElementFromHTML(innerModalHtml));
-  return new SearchModal({searchApiUrl, section, partition});
-}
+  return new SearchModal({
+    searchApiUrl,
+    section,
+    partition,
+    useDirectQdrant,
+    qdrantConfig,
+  });
+};
 
 window.initQdrantSearch = initQdrantSearch;
 

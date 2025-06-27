@@ -3,13 +3,13 @@
  * @param {string} htmlString
  * @return {ChildNode}
  */
-export const createElementFromHTML = function (htmlString) {
+export const createElementFromHTML = (htmlString) => {
   const div = document.createElement('div');
   div.innerHTML = htmlString.trim();
 
   // Change this to div.childNodes to support multiple top-level nodes.
   return div.firstElementChild;
-}
+};
 
 /**
  * adds an encoded in base64 selector to the url
@@ -17,7 +17,7 @@ export const createElementFromHTML = function (htmlString) {
  * @param {string|null} query
  * @return {string}
  */
-export const generateUrlWithSelector = function (data, query = null) {
+export const generateUrlWithSelector = (data, query = null) => {
   const url = new URL(data?.payload?.url, window.location.origin);
   // pass an object
   url.searchParams.append('selector', window.btoa(data?.payload?.location));
@@ -26,22 +26,21 @@ export const generateUrlWithSelector = function (data, query = null) {
   }
 
   return url.toString();
-}
+};
 
 /**
  * Simulate a click event.
  * @public
  * @param {Element} elem  the element to simulate a click on
  */
-export const simulateClick = function (elem) {
+export const simulateClick = (elem) => {
   if (!elem) {
     return;
   }
-  // Create our event (with options)
+  // Create and dispatch the click event
   const evt = new MouseEvent('click', {
     bubbles: true,
     cancelable: true,
   });
-  // If cancelled, don't dispatch our event
-  const canceled = !elem.dispatchEvent(evt);
+  elem.dispatchEvent(evt);
 };

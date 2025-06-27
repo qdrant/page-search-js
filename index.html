@@ -1,36 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/dist/css/styles.min.css">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/dist/css/styles.min.css" />
 
-    <!-- these styles used just for example, you don't need to copy them in your project-->
-    <style>
-       .button-wrapper {
-         width: 209px;
-       }
-    </style>
-</head>
-<body>
+        <!-- these styles used just for example, you don't need to copy them in your project-->
+        <style>
+            .button-wrapper {
+                width: 209px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="button-wrapper">
+            <!-- Button trigger modal -->
+            <button
+                type="button"
+                class="qdr-search-input-btn"
+                data-target="#searchModal"
+            >
+                <i class="fa fa-search mr-3"></i> Search...
+            </button>
+        </div>
 
-
-<div class="button-wrapper">
-    <!-- Button trigger modal -->
-    <button type="button" class="qdr-search-input-btn" data-target="#searchModal">
-        <i class="fa fa-search mr-3"></i> Search...
-    </button>
-</div>
-
-<h1>Example Page</h1>
-
-</body>
-<script defer src="/dist/js/search.min.js" type="module"></script>
-<script defer>
-  window.addEventListener('DOMContentLoaded', () => {
-    initQdrantSearch({searchApiUrl: 'https://search.qdrant.tech/api/search', section: "documentation"});
-    console.log("DOM is ready");
-  });
-</script>
+        <h1>Example Page</h1>
+    </body>
+    <script defer src="/dist/js/search.min.js" type="module"></script>
+    <script defer>
+        window.addEventListener("DOMContentLoaded", () => {
+            initQdrantSearch({
+                section: "documentation",
+                qdrantConfig: {
+                    qdrantUrl: "http://localhost:6333",
+                    collectionName: "site",
+                    apiKey: "",
+                },
+            });
+            console.log("DOM is ready - using direct Qdrant connection");
+        });
+    </script>
 </html>

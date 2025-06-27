@@ -1,15 +1,20 @@
 {
   "name": "qdrant-page-search",
   "version": "1.1.2",
-  "description": "Add markup for the search modal popup:",
+  "description": "Search widget for documentation sites with direct Qdrant integration",
   "author": "Qdrant Team <team@qdrant.tech> (https://qdrant.tech)",
   "main": "dist/js/search.min.js",
   "style": "dist/css/search.min.css",
   "sass": "src/scss/styles.scss",
+  "type": "module",
   "scripts": {
     "build": "webpack --mode=production",
     "dev": "webpack serve --mode=development --open --progress",
-    "test": "echo \"no test specified\""
+    "test": "node test/QdrantDirectClient.test.js",
+    "lint": "npx @biomejs/biome check .",
+    "lint:fix": "npx @biomejs/biome check --write .",
+    "format": "npx @biomejs/biome format --write .",
+    "check": "npx @biomejs/biome check . && npm run build"
   },
   "repository": {
     "type": "git",
@@ -18,11 +23,11 @@
   "keywords": [
     "qdrant",
     "search",
-    "page",
-    "search",
+    "page-search",
     "documentation",
-    "vector",
-    "search"
+    "vector-search",
+    "semantic-search",
+    "widget"
   ],
   "license": "Apache-2.0",
   "bugs": {
@@ -32,6 +37,7 @@
   "devDependencies": {
     "@babel/core": "^7.18.13",
     "@babel/preset-env": "^7.18.10",
+    "@biomejs/biome": "^2.0.5",
     "babel-loader": "^8.2.5",
     "css-loader": "^6.7.1",
     "mini-css-extract-plugin": "^2.6.1",

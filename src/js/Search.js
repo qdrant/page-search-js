@@ -1,16 +1,24 @@
+import { QdrantDirectClient } from './QdrantDirectClient.js';
+
 /**
  * @class Search
- * @param {String} input - query input DOM element - DOM element
- * @param {String} apiUrl - URL of the search API
+ * @param {Object} config - Configuration object
+ * @param {string} [config.section] - Optional section filter
+ * @param {string} [config.partition] - Optional partition filter
+ * @param {Object} config.qdrantConfig - Qdrant client configuration
  */
 export class Search {
   #updEvent;
   #dataVersion;
   #reqVersion;
+  #debounceTimer;
 
-  constructor({apiUrl, section, partition}) {
+  constructor({ section, partition, qdrantConfig }) {
+    if (!qdrantConfig) {
+      throw new Error('qdrantConfig is required');
+    }
+
     this._input = document.querySelector('#searchInput');
-    this.apiUrl = apiUrl;
     this.section = section;
     this.partition = partition;
     this._data = [];
@@ -18,15 +26,19 @@ export class Search {
     this.#updEvent = new Event('searchDataIsReady');
     this.#dataVersion = 0;
     this.#reqVersion = 0;
+    this.#debounceTimer = null;
+
+    this.qdrantClient = new QdrantDirectClient(qdrantConfig);
 
     this._input.addEventListener('input', (e) => {
       if (e.target.value.trim().length === 0) {
+        this.clearDebounceTimer();
         this._data = [];
         document.dispatchEvent(this.#updEvent);
       } else {
         this.fetchData(e.target.value);
       }
-    })
+    });
   }
 
   get input() {
@@ -53,73 +65,45 @@ export class Search {
     this._error = newError;
   }
 
-  /**
-   * request data using search string
-   * await data with the next structure:
-   *  {result: [
-   *  {
-   * "payload": {
-   *   "location": "html > body > div:nth-of-type(1) > section:nth-of-type(2) > div > div > div > article > h3:nth-of-type(4)",
-   *  "sections": [
-   *    "documentation",
-   *    "documentation/quick_start"
-   *  ],
-   *  "tag": "h3",
-   *  "text": "Search with filtering",
-   *  "titles": [
-   *    "Qdrant - Quick Start",
-   *    "Add points"
-   *  ],
-   *  "url": "https://qdrant.tech/documentation/quick_start/",
-   *  "partition": "cloud"
-   * },
-   * "score": 0.96700734
-   * },
-   * ...
-   * ]}
-   */
   fetchData(query) {
     if (this.input.value.trim().length === 0) {
       return;
     }
 
-    const url = new URL(this.apiUrl, document.location);
-    url.searchParams.append('q', this.input.value);
-    if (this.section) {
-      url.searchParams.append('section', this.section);
-    }
-    if (this.partition) {
-      url.searchParams.append('partition', this.partition);
-    }
-
-    let reqVersion = this.#reqVersion + 1;
+    const reqVersion = this.#reqVersion + 1;
     this.#reqVersion += 1;
 
-    const t = setTimeout(() => {
-      clearTimeout(t);
+    // Clear previous timer
+    this.clearDebounceTimer();
 
+    // Set new timer to make sure it will active since last key-press instead of first
+    this.#debounceTimer = setTimeout(() => {
       if (this.#reqVersion <= reqVersion) {
-
-        fetch(url)
-          .then(res => {
-            if (res.ok) {
-              return res.json();
-            } else {
-              return {result: [], error: res.statusText};
-            }
-          })
-          .then(data => {
-            if (reqVersion > this.#dataVersion) {
-              this.#dataVersion = reqVersion;
-              this.data = data.result;
-              this.error = data?.error;
-              document.dispatchEvent(this.#updEvent);
-            }
-          })
-          .catch(err => {
-            this.error = err.message;
-          });
+        this.fetchDataFromQdrant(query, reqVersion);
       }
     }, 100);
+  }
+
+  clearDebounceTimer() {
+    if (this.#debounceTimer) {
+      clearTimeout(this.#debounceTimer);
+      this.#debounceTimer = null;
+    }
+  }
+
+  async fetchDataFromQdrant(query, reqVersion) {
+    try {
+      const response = await this.qdrantClient.search(query, this.section, this.partition);
+      if (reqVersion > this.#dataVersion) {
+        this.#dataVersion = reqVersion;
+        this.data = response.result;
+        this.error = undefined;
+        document.dispatchEvent(this.#updEvent);
+      }
+    } catch (err) {
+      this.error = err.message;
+      this.data = [];
+      document.dispatchEvent(this.#updEvent);
+    }
   }
 }
