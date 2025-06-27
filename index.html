@@ -29,8 +29,15 @@
 <script defer src="/dist/js/search.min.js" type="module"></script>
 <script defer>
   window.addEventListener('DOMContentLoaded', () => {
-    initQdrantSearch({searchApiUrl: 'https://search.qdrant.tech/api/search', section: "documentation"});
-    console.log("DOM is ready");
+    initQdrantSearch({
+      section: "documentation",
+      qdrantConfig: {
+        qdrantUrl: 'https://cloud.qdrant.io',
+        collectionName: 'qdrant-site-search-docs',
+        apiKey: 'your-api-key-here' // Replace with actual API key
+      }
+    });
+    console.log("DOM is ready - using direct Qdrant connection");
   });
 </script>
 </html>

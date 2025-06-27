@@ -3,10 +3,10 @@
  * @param {Object} {modalOuterSelector, modalDialogSelector, closeBtnSelector, bodySelector}
  */
 export class ModalWindow {
-  #showEvent
-  #hideEvent
+  #showEvent;
+  #hideEvent;
 
-  constructor({modalOuterSelector, modalDialogSelector, closeBtnSelector, resultSelector}) {
+  constructor({ modalOuterSelector, modalDialogSelector, closeBtnSelector, resultSelector }) {
     // an outer element
     this.modal = document.querySelector(modalOuterSelector);
     // an outer element - a dialog window
@@ -19,12 +19,10 @@ export class ModalWindow {
     this.#showEvent = new Event('qdrModalShow');
     this.#hideEvent = new Event('qdrModalHide');
 
-    const boundShowHandler = this.show.bind(this)
-    const boundHideHanler = this.hide.bind(this)
+    const boundShowHandler = this.show.bind(this);
+    const boundHideHanler = this.hide.bind(this);
 
-    // listens for clicks on the open buttons
-    this.openBtns.forEach(btn => btn.addEventListener('click', boundShowHandler));
-
+    this.openBtns.forEach((btn) => btn.addEventListener('click', boundShowHandler));
 
     // listens for clicks on the modal
     this.modal.addEventListener('click', (e) => {
@@ -39,11 +37,10 @@ export class ModalWindow {
 
     // listens for the Esc button is pressed
     document.addEventListener('keydown', (e) => {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         boundHideHanler(e);
       }
-    })
-
+    });
   }
 
   show() {
@@ -56,11 +53,11 @@ export class ModalWindow {
     const modal = this.modal;
     const myEvent = this.#hideEvent;
     modal.classList.remove('active');
-    const t = setTimeout(function () {
+    const t = setTimeout(() => {
       modal.style.display = 'none';
       document.dispatchEvent(myEvent);
       clearTimeout(t);
-    }, 300)
+    }, 300);
   }
 
   /**
@@ -72,5 +69,4 @@ export class ModalWindow {
       callback();
     }
   }
-
 }

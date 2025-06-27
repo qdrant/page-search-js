@@ -1,9 +1,11 @@
-const path = require('path');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-module.exports = function (env, argv) {
-
+export default function (_env, argv) {
   const isEnvDevelopment = argv.mode === 'development';
   const isEnvProduction = argv.mode === 'production';
 
@@ -18,7 +20,7 @@ module.exports = function (env, argv) {
     output: {
       path: path.resolve(__dirname, './dist/js'),
       publicPath: './dist/js/',
-      filename: '[name].min.js'
+      filename: '[name].min.js',
     },
     module: {
       rules: [
@@ -28,9 +30,9 @@ module.exports = function (env, argv) {
           use: {
             loader: 'babel-loader',
             options: {
-              presets: ['@babel/preset-env',]
-            }
-          }
+              presets: ['@babel/preset-env'],
+            },
+          },
         },
 
         {
@@ -41,20 +43,20 @@ module.exports = function (env, argv) {
 
           use: [
             MiniCssExtractPlugin.loader,
-            "css-loader",
-            "resolve-url-loader",
+            'css-loader',
+            'resolve-url-loader',
             {
               loader: 'sass-loader',
               options: {
                 sourceMap: true,
-              }
-            }
-          ]
+              },
+            },
+          ],
         },
 
         {
           test: /\.(png|jpe?g|gif|svg)$/i,
-          type: "asset/inline",
+          type: 'asset/inline',
         },
       ],
     },
@@ -67,9 +69,9 @@ module.exports = function (env, argv) {
     },
     watchOptions: {
       poll: true,
-      ignored: /node_modules/
+      ignored: /node_modules/,
     },
     cache: false,
-    plugins: [new MiniCssExtractPlugin({filename: '../css/styles.min.css'})],
+    plugins: [new MiniCssExtractPlugin({ filename: '../css/styles.min.css' })],
   };
 }

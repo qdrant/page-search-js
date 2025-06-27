@@ -1,12 +1,14 @@
-import {generateUrlWithSelector, simulateClick} from "./helpers";
-import {ModalWindow} from "./ModalWindow";
-import {Search} from "./Search";
+import { generateUrlWithSelector, simulateClick } from './helpers.js';
+import { ModalWindow } from './ModalWindow.js';
+import { Search } from './Search.js';
 
 export class SearchModal {
-  constructor({searchApiUrl, section, partition}) {
+  constructor({ searchApiUrl, section, partition, useDirectQdrant = false, qdrantConfig = {} }) {
     this.apiUrl = searchApiUrl;
     this.section = section;
     this.partition = partition;
+    this.useDirectQdrant = useDirectQdrant;
+    this.qdrantConfig = qdrantConfig;
     this.modal = new ModalWindow({
       modalOuterSelector: '#searchModal',
       modalDialogSelector: '.qdr-search__dialog',
@@ -14,45 +16,89 @@ export class SearchModal {
       resultSelector: '.qdr-search__results',
     });
 
-    this.searchInput = new Search({apiUrl: this.apiUrl, section: this.section, partition: this.partition});
+    this.searchInput = new Search({
+      apiUrl: this.apiUrl,
+      section: this.section,
+      partition: this.partition,
+      useDirectQdrant: this.useDirectQdrant,
+      qdrantConfig: this.qdrantConfig,
+    });
     this.activeResultIdx = null;
+    this.isModalShown = false;
 
-    let isModalShown = false;
+    this.boundHandlers = {
+      modalShow: this.handleModalShow.bind(this),
+      modalHide: this.handleModalHide.bind(this),
+      searchReady: this.updateResult.bind(this),
+      keydown: this.handleKeydown.bind(this),
+    };
 
-    const setFocusToInput = this.setFocusToInput.bind(this);
-    // when a search modal is shown
-    document.addEventListener('qdrModalShow', () => {
-      setFocusToInput();
-      isModalShown = true;
-    });
+    this.attachEventListeners();
+  }
 
-    document.addEventListener('qdrModalHide', () => {
-      isModalShown = false;
-    });
+  attachEventListeners() {
+    document.addEventListener('qdrModalShow', this.boundHandlers.modalShow);
+    document.addEventListener('qdrModalHide', this.boundHandlers.modalHide);
+    document.addEventListener('searchDataIsReady', this.boundHandlers.searchReady);
+    document.addEventListener('keydown', this.boundHandlers.keydown);
+    
+    if (this.modal.result) {
+      this.modal.result.addEventListener('mouseover', this.handleResultHover.bind(this));
+    }
+  }
 
-    // when new search data if ready to be shown
-    document.addEventListener('searchDataIsReady', this.updateResult.bind(this));
+  detachEventListeners() {
+    document.removeEventListener('qdrModalShow', this.boundHandlers.modalShow);
+    document.removeEventListener('qdrModalHide', this.boundHandlers.modalHide);
+    document.removeEventListener('searchDataIsReady', this.boundHandlers.searchReady);
+    document.removeEventListener('keydown', this.boundHandlers.keydown);
+    
+    if (this.modal.result) {
+      this.modal.result.removeEventListener('mouseover', this.handleResultHover.bind(this));
+    }
+  }
 
-    // when any key pressed
-    const navigateTroughResultsHandler = this.navigateTroughResults.bind(this)
-    document.addEventListener('keydown', e => {
-      if (!isModalShown) {
-        return;
-      }
+  handleModalShow() {
+    this.setFocusToInput();
+    this.isModalShown = true;
+  }
 
-      // navigation if arrows up or down pressed
-      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        navigateTroughResultsHandler(e);
-      }
-      // on Enter - go by the active link
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        // simulate click on the active result
-        simulateClick(this.modal.result.querySelector(`.qdr-search-result[data-key="${this.activeResultIdx}"]`));
-      }
-    });
+  handleModalHide() {
+    this.isModalShown = false;
+  }
 
+  handleKeydown(e) {
+    if (!this.isModalShown) {
+      return;
+    }
+
+    // navigation if arrows up or down pressed
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      this.navigateTroughResults(e);
+    }
+    // on Enter - go by the active link
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      // simulate click on the active result
+      simulateClick(
+        this.modal.result.querySelector(`.qdr-search-result[data-key="${this.activeResultIdx}"]`)
+      );
+    }
+  }
+
+  handleResultHover(e) {
+    const resultElement = e.target.closest('.qdr-search-result');
+    if (resultElement && resultElement.dataset.key) {
+      this.activeResultIdx = Number.parseInt(resultElement.dataset.key);
+      this.addActiveClassToResult(this.activeResultIdx);
+    }
+  }
+
+  destroy() {
+    this.detachEventListeners();
+    this.modal = null;
+    this.searchInput = null;
   }
 
   set activeResultIdx(newIdx) {
@@ -73,7 +119,8 @@ export class SearchModal {
     resultElem.classList.add('qdr-search-result');
     resultElem.href = generateUrlWithSelector(data, this.searchInput.input?.value);
 
-    const iconClass = data.payload.tag === "p" ? "qdr-search-result__icon" : "qdr-search-result__paragraph-icon";
+    const iconClass =
+      data.payload.tag === 'p' ? 'qdr-search-result__icon' : 'qdr-search-result__paragraph-icon';
 
     resultElem.innerHTML = `<span class="${iconClass}"></span>
                    <div class="qdr-search-result__body"><h5 class="mt-0">${data?.highlight || data.payload.text}</h5>
@@ -92,11 +139,6 @@ export class SearchModal {
       const resultElement = this.generateSearchResult(result);
       resultElement.dataset.key = i;
       newResultChildren.push(resultElement);
-
-      resultElement.addEventListener('mouseover', e => {
-        this.activeResultIdx = parseInt(resultElement.dataset.key);
-        this.addActiveClassToResult(this.activeResultIdx);
-      });
     });
     this.modal.updateResultChildren(newResultChildren, () => {
       this.activeResultIdx = 0;
@@ -116,19 +158,17 @@ export class SearchModal {
    * @param {number|string} idx - index
    */
   addActiveClassToResult(idx) {
-    const results = this.modal.result.querySelectorAll('.qdr-search-result');
-    if (results.length === 0) {
-      return;
+    // Remove active class from previously active element
+    const previousActive = this.modal.result.querySelector('.qdr-search-result.active');
+    if (previousActive) {
+      previousActive.classList.remove('active');
     }
-    [...results].forEach(el => {
-      if (el.classList.contains('active')) {
-        el.classList.remove('active');
-      }
-    });
-    const resultToActivate = [...results].find(el => {
-      return parseInt(el.dataset.key) === parseInt(idx);
-    });
-    resultToActivate.classList.add('active');
+    
+    // Add active class to new element using direct selector
+    const resultToActivate = this.modal.result.querySelector(`.qdr-search-result[data-key="${idx}"]`);
+    if (resultToActivate) {
+      resultToActivate.classList.add('active');
+    }
   }
 
   /**
@@ -166,7 +206,5 @@ export class SearchModal {
 
     // add an 'active' class to the element with data-key == this.activeResultIdx
     this.addActiveClassToResult(this.activeResultIdx);
-
   }
-
 }
