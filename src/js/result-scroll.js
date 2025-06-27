@@ -1,5 +1,5 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const selector = new URLSearchParams(window.location.search).get("selector");
+document.addEventListener('DOMContentLoaded', () => {
+  const selector = new URLSearchParams(window.location.search).get('selector');
   if (!selector) return;
 
   try {
@@ -7,7 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const element = document.querySelector(decodedSelector);
 
     if (!element) {
-      console.warn(`Element not found for selector: ${decodedSelector}`);
+      // Element not found is expected behavior when selector doesn't match
+      // Simply return without logging
       return;
     }
 
@@ -17,21 +18,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.scrollTo({
       top: offsetPosition,
-      behavior: "smooth",
+      behavior: 'smooth',
     });
 
     setTimeout(() => {
-      element.style.backgroundColor = "rgba(255,246,188,0.73)";
+      element.style.backgroundColor = 'rgba(255,246,188,0.73)';
     }, 1500);
 
     setTimeout(() => {
-      element.style.backgroundColor = "";
+      element.style.backgroundColor = '';
 
       const url = new URL(window.location);
-      url.searchParams.delete("selector");
+      url.searchParams.delete('selector');
       history.replaceState(null, null, url);
     }, 3000);
-  } catch (error) {
-    console.error("Error processing selector:", error);
+  } catch {
+    // Invalid selector is expected for malformed base64
+    // Silently fail as this is a non-critical feature
   }
 });

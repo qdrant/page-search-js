@@ -11,13 +11,13 @@ export class QdrantDirectClient {
    */
   constructor(config) {
     if (!config.qdrantUrl) {
-      throw new Error("qdrantUrl is required in config");
+      throw new Error('qdrantUrl is required in config');
     }
     if (!config.collectionName) {
-      throw new Error("collectionName is required in config");
+      throw new Error('collectionName is required in config');
     }
 
-    this.qdrantUrl = config.qdrantUrl.replace(/\/$/, "");
+    this.qdrantUrl = config.qdrantUrl.replace(/\/$/, '');
     this.collectionName = config.collectionName;
     this.apiKey = config.apiKey;
     this.timeout = 30000;
@@ -31,15 +31,28 @@ export class QdrantDirectClient {
    * @returns {Promise<Object>} Search results in legacy API format
    */
   async search(query, section, partition) {
-    if (!query || typeof query !== "string") {
-      throw new Error("Query must be a non-empty string");
+    if (!query || typeof query !== 'string') {
+      throw new Error('Query must be a non-empty string');
+    }
+
+    // Clean and validate query
+    const cleanedQuery = query.trim();
+
+    // Check if query is too short
+    if (cleanedQuery.length < 1) {
+      return { result: [] };
+    }
+
+    // Check if query contains only punctuation/special chars
+    if (!/[a-zA-Z0-9]/.test(cleanedQuery)) {
+      return { result: [] };
     }
 
     const queryRequest = {
       query: {
         nearest: {
-          text: query,
-          model: "sentence-transformers/all-minilm-l6-v2",
+          text: cleanedQuery,
+          model: 'sentence-transformers/all-minilm-l6-v2',
         },
       },
       filter: this.buildFilter(section, partition),
@@ -51,11 +64,11 @@ export class QdrantDirectClient {
     const url = `${this.qdrantUrl}/collections/${this.collectionName}/points/query`;
 
     const headers = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     };
 
     if (this.apiKey) {
-      headers["api-key"] = this.apiKey;
+      headers['api-key'] = this.apiKey;
     }
 
     const controller = new AbortController();
@@ -63,7 +76,7 @@ export class QdrantDirectClient {
 
     try {
       const response = await fetch(url, {
-        method: "POST",
+        method: 'POST',
         headers: headers,
         body: JSON.stringify(queryRequest),
         signal: controller.signal,
@@ -72,18 +85,16 @@ export class QdrantDirectClient {
       clearTimeout(timeoutId);
 
       if (!response.ok) {
-        throw new Error(
-          `Query failed: ${response.status} ${response.statusText}`,
-        );
+        throw new Error(`Query failed: ${response.status} ${response.statusText}`);
       }
 
       const data = await response.json();
-      return this.transformResponse(data, query);
+      return this.transformResponse(data, cleanedQuery);
     } catch (error) {
       clearTimeout(timeoutId);
 
-      if (error.name === "AbortError") {
-        throw new Error("Query request timed out after 30 seconds");
+      if (error.name === 'AbortError') {
+        throw new Error('Query request timed out after 30 seconds');
       }
 
       throw new Error(`Query error: ${error.message}`);
@@ -101,14 +112,14 @@ export class QdrantDirectClient {
 
     if (section) {
       conditions.push({
-        key: "sections",
+        key: 'sections',
         match: { value: section },
       });
     }
 
     if (partition) {
       conditions.push({
-        key: "partition",
+        key: 'partition',
         match: { value: partition },
       });
     }
@@ -123,18 +134,39 @@ export class QdrantDirectClient {
    * @returns {Object} Response in legacy format
    */
   transformResponse(qdrantResponse, query) {
-    if (
-      !qdrantResponse ||
-      !qdrantResponse.result ||
-      !qdrantResponse.result.points
-    ) {
+    if (!qdrantResponse || !qdrantResponse.result || !qdrantResponse.result.points) {
       return { result: [] };
     }
 
-    const transformedResults = qdrantResponse.result.points.map((point) => ({
+    // Post-filter results to remove noise
+    const filteredResults = qdrantResponse.result.points
+      .filter((point) => {
+        const text = point.payload?.text || '';
+
+        // Skip empty or very short text
+        if (text.length < 10) {
+          return false;
+        }
+
+        // Skip if text is mostly punctuation
+        const alphanumericRatio = (text.match(/[a-zA-Z0-9]/g) || []).length / text.length;
+        if (alphanumericRatio < 0.5) {
+          return false;
+        }
+
+        // For short queries, require higher relevance score
+        if (query.length <= 3 && point.score < 0.7) {
+          return false;
+        }
+
+        return true;
+      })
+      .slice(0, 10); // Limit to top 10 results after filtering (make it configurable?)
+
+    const transformedResults = filteredResults.map((point) => ({
       payload: point.payload || {},
       score: point.score || 0,
-      highlight: this.truncateText(point.payload?.text || ""),
+      highlight: this.truncateText(point.payload?.text || ''),
     }));
 
     return { result: transformedResults };

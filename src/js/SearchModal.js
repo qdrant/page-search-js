@@ -41,7 +41,7 @@ export class SearchModal {
     document.addEventListener('qdrModalHide', this.boundHandlers.modalHide);
     document.addEventListener('searchDataIsReady', this.boundHandlers.searchReady);
     document.addEventListener('keydown', this.boundHandlers.keydown);
-    
+
     if (this.modal.result) {
       this.modal.result.addEventListener('mouseover', this.handleResultHover.bind(this));
     }
@@ -52,7 +52,7 @@ export class SearchModal {
     document.removeEventListener('qdrModalHide', this.boundHandlers.modalHide);
     document.removeEventListener('searchDataIsReady', this.boundHandlers.searchReady);
     document.removeEventListener('keydown', this.boundHandlers.keydown);
-    
+
     if (this.modal.result) {
       this.modal.result.removeEventListener('mouseover', this.handleResultHover.bind(this));
     }
@@ -89,7 +89,7 @@ export class SearchModal {
 
   handleResultHover(e) {
     const resultElement = e.target.closest('.qdr-search-result');
-    if (resultElement && resultElement.dataset.key) {
+    if (resultElement?.dataset.key) {
       this.activeResultIdx = Number.parseInt(resultElement.dataset.key);
       this.addActiveClassToResult(this.activeResultIdx);
     }
@@ -163,9 +163,11 @@ export class SearchModal {
     if (previousActive) {
       previousActive.classList.remove('active');
     }
-    
+
     // Add active class to new element using direct selector
-    const resultToActivate = this.modal.result.querySelector(`.qdr-search-result[data-key="${idx}"]`);
+    const resultToActivate = this.modal.result.querySelector(
+      `.qdr-search-result[data-key="${idx}"]`
+    );
     if (resultToActivate) {
       resultToActivate.classList.add('active');
     }

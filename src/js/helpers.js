@@ -37,9 +37,10 @@ export const simulateClick = (elem) => {
   if (!elem) {
     return;
   }
-  // Create our event (with options)
+  // Create and dispatch the click event
   const evt = new MouseEvent('click', {
     bubbles: true,
     cancelable: true,
   });
+  elem.dispatchEvent(evt);
 };

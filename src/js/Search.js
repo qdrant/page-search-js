@@ -1,4 +1,4 @@
-import { QdrantDirectClient } from "./QdrantDirectClient.js";
+import { QdrantDirectClient } from './QdrantDirectClient.js';
 
 /**
  * @class Search
@@ -15,22 +15,22 @@ export class Search {
 
   constructor({ section, partition, qdrantConfig }) {
     if (!qdrantConfig) {
-      throw new Error("qdrantConfig is required");
+      throw new Error('qdrantConfig is required');
     }
 
-    this._input = document.querySelector("#searchInput");
+    this._input = document.querySelector('#searchInput');
     this.section = section;
     this.partition = partition;
     this._data = [];
     this._error = undefined;
-    this.#updEvent = new Event("searchDataIsReady");
+    this.#updEvent = new Event('searchDataIsReady');
     this.#dataVersion = 0;
     this.#reqVersion = 0;
     this.#debounceTimer = null;
 
     this.qdrantClient = new QdrantDirectClient(qdrantConfig);
 
-    this._input.addEventListener("input", (e) => {
+    this._input.addEventListener('input', (e) => {
       if (e.target.value.trim().length === 0) {
         this.clearDebounceTimer();
         this._data = [];
@@ -75,7 +75,7 @@ export class Search {
 
     // Clear previous timer
     this.clearDebounceTimer();
-    
+
     // Set new timer to make sure it will active since last key-press instead of first
     this.#debounceTimer = setTimeout(() => {
       if (this.#reqVersion <= reqVersion) {
@@ -93,11 +93,7 @@ export class Search {
 
   async fetchDataFromQdrant(query, reqVersion) {
     try {
-      const response = await this.qdrantClient.search(
-        query,
-        this.section,
-        this.partition,
-      );
+      const response = await this.qdrantClient.search(query, this.section, this.partition);
       if (reqVersion > this.#dataVersion) {
         this.#dataVersion = reqVersion;
         this.data = response.result;
@@ -110,5 +106,4 @@ export class Search {
       document.dispatchEvent(this.#updEvent);
     }
   }
-
 }

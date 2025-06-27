@@ -51,8 +51,7 @@ test('transformResponse: should correctly transform Qdrant response', () => {
   assert.strictEqual(result1.result[0].score, 0.86705697);
   assert(typeof result1.result[0].highlight === 'string');
   const result2 = client.transformResponse(mockQdrantResponses.responseWithMissingFields, 'query');
-  assert.strictEqual(result2.result[0].score, 0);
-  assert.strictEqual(result2.result[0].highlight, '');
+  assert.strictEqual(result2.result.length, 0);
   assert.deepStrictEqual(client.transformResponse(null, 'query'), {
     result: [],
   });
