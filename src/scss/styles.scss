@@ -151,13 +151,13 @@
     display: inline-block;
     width: 72px;
     height: 24px;
-    margin-top: -4px;
     margin-right: 4px;
     margin-left: 8px;
     background: url("../images/logo_with_black_text.svg") 0 0 no-repeat;
     background-size: contain;
     [data-theme="dark"] & {
       background: url("../images/logo_with_white_text.svg") 0 0 no-repeat;
+      background-size: contain;
     }
   }
 }
